@@ -47,4 +47,4 @@ MonoBehaviour:
   width: 21
   height: 21
   wallPrefab: {fileID: 8888894509561201240, guid: 7ff10a41a5dbd7f4dbffa69e9e12f102, type: 3}
-  floorPrefab: {fileID: 1091004720969886185, guid: 22e0da8b44f5da04aaac2d7ef339f284, type: 3}
+  floorPrefab: {fileID: 1415802485292939538, guid: daeadaa2f0eaad5459f4d074e6c9939a, type: 3}

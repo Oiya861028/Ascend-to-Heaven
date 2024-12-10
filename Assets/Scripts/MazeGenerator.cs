@@ -5,9 +5,10 @@ using Unity.AI.Navigation;
 // Cell class definition embedded in the same script
 public class Cell
 {
-    public bool IsVisited = false;
     public bool IsWall = true;
-    public bool ISWalkable;
+    public bool IsVisited = false;
+    public bool IsWalkable;
+
 }
 public class MazeGenerator : MonoBehaviour
 {
@@ -110,7 +111,7 @@ public class MazeGenerator : MonoBehaviour
             {
                 // Make the wall a passage
                 grid[x, y].IsWall = false;
-                grid[x, y].ISWalkable = true;
+                grid[x, y].IsWalkable = true;
 
                 // Mark the unvisited cell as visited
                 if (!cell1.IsVisited)
@@ -167,5 +168,8 @@ public class MazeGenerator : MonoBehaviour
                 }
             }
         }
+    }
+    public bool getIsWalkable(int x, int y){
+        return grid[x, y].IsWalkable;
     }
 }

@@ -4,12 +4,17 @@ public class Node
 {
     public Vector2Int GridPosition;
     public bool IsWalkable;
-    public int StepCost; //cost from Start node
-    public int DistanceToEndCost; //heiristic cost to end node
-    public int FCost => StepCost + DistanceToEndCost; //Total Cost
-    public Node parentCell;
-    public Node(Vector2Int GridPosition, bool isWalkable) {
-        this.GridPosition = GridPosition;
+    public int GCost;
+    public int HCost;
+    public int FCost => GCost + HCost;
+    public Node ParentNode;
+
+    public Node(Vector2Int gridPosition, bool isWalkable)
+    {
+        GridPosition = gridPosition;
         IsWalkable = isWalkable;
+        GCost = int.MaxValue;
+        HCost = 0;
+        ParentNode = null;
     }
 }

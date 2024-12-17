@@ -2,6 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
 public class MazeGenerator : MonoBehaviour
 {
     public class Cell
@@ -9,19 +17,20 @@ public class MazeGenerator : MonoBehaviour
         public bool IsVisited = false;
         public bool IsWall = true;
         public GameObject Instance;
-        public bool HasGoodItem = false;
-        public bool HasBadItem = false;
+        public CellState CellState;
     }
     
-    // Lab-specific additions
-    public GameObject goodItemPrefab;
-    public GameObject badItemPrefab;
+    // Lab-specific settings
     public float generationDelay = 0.025f;
     
-    // Distribution from lab spec
-    public float badProb = 0.2f;
-    public float goodProb = 0.2f;
+    // Hidden reward probabilities from lab spec
+    public float hiddenBadProb = 0.2f;  // 20% chance of penalty
+    public float hiddenGoodProb = 0.2f; // 20% chance of reward
 
+    // Reward values from lab spec
+    public float goodReward = 10f;
+    public float badPenalty = -5f;
+    
     public int width = 21;
     public int height = 21;
     public GameObject wallPrefab;
@@ -30,12 +39,11 @@ public class MazeGenerator : MonoBehaviour
     public Vector2Int startPosition = new Vector2Int(1, 1);
     public Vector2Int endPosition = new Vector2Int(19, 19);
 
-    private Cell[,] grid;
+    public Cell[,] grid;
     private List<Vector2Int> wallList;
-    public Node[,] nodes;  // Made public so NPCController can access it
+    public Node[,] nodes;
     private List<Node> openList;
     private HashSet<Node> closedList;
-
 
     void Start()
     {
@@ -47,9 +55,8 @@ public class MazeGenerator : MonoBehaviour
     {
         yield return StartCoroutine(GenerateMaze());
         InitializeNodes();
-        PlaceItemsInMaze();
+        AssignHiddenRewards();
         PlaceCharacters();
-        // FindPath(startPosition, endPosition);
     }
 
     void InitializeGrid()
@@ -62,11 +69,17 @@ public class MazeGenerator : MonoBehaviour
                 grid[x, y] = new Cell();
                 Vector3 position = new Vector3(x, 0, y);
                 grid[x, y].Instance = Instantiate(wallPrefab, position, Quaternion.identity, transform);
+                
+                // Add CellState component to the instance
+                CellState cellState = grid[x, y].Instance.AddComponent<CellState>();
+                cellState.x = x;
+                cellState.y = y;
+                grid[x, y].CellState = cellState;
             }
         }
     }
 
-    void PlaceItemsInMaze()
+    void AssignHiddenRewards()
     {
         for (int x = 0; x < width; x++)
         {
@@ -75,19 +88,24 @@ public class MazeGenerator : MonoBehaviour
                 if (!grid[x, y].IsWall)
                 {
                     float randVal = Random.value;
-                    Vector3 itemPosition = new Vector3(x, 0.5f, y);
-                    
-                    if (randVal < badProb)
+                    CellState cellState = grid[x, y].CellState;
+
+                    if (cellState != null)
                     {
-                        GameObject badItem = Instantiate(badItemPrefab, itemPosition, Quaternion.identity);
-                        badItem.tag = "BadItem";
-                        grid[x, y].HasBadItem = true;
-                    }
-                    else if (randVal < badProb + goodProb)
-                    {
-                        GameObject goodItem = Instantiate(goodItemPrefab, itemPosition, Quaternion.identity);
-                        goodItem.tag = "GoodItem";
-                        grid[x, y].HasGoodItem = true;
+                        if (randVal < hiddenGoodProb)
+                        {
+                            cellState.hiddenReward = goodReward;
+                            Debug.Log($"Assigned good reward to cell ({x}, {y})");
+                        }
+                        else if (randVal < hiddenGoodProb + hiddenBadProb)
+                        {
+                            cellState.hiddenReward = badPenalty;
+                            Debug.Log($"Assigned bad penalty to cell ({x}, {y})");
+                        }
+                        else
+                        {
+                            cellState.hiddenReward = 0f;
+                        }
                     }
                 }
             }
@@ -110,6 +128,23 @@ public class MazeGenerator : MonoBehaviour
             npc.transform.position = new Vector3(endPosition.x, 1, endPosition.y);
         }
     }
+    void SetCell(int x, int y, bool isWall)
+    {
+        Destroy(grid[x, y].Instance);
+        grid[x, y].IsWall = isWall;
+        grid[x, y].IsVisited = true;
+        Vector3 position = new Vector3(x, 0, y);
+        grid[x, y].Instance = Instantiate(isWall ? wallPrefab : floorPrefab, position, Quaternion.identity, transform);
+        
+        // Add CellState component to new instance
+        CellState cellState = grid[x, y].Instance.AddComponent<CellState>();
+        cellState.x = x;
+        cellState.y = y;
+        cellState.isWalkable = !isWall;
+        grid[x, y].CellState = cellState;
+    }
+
+    
 
     IEnumerator GenerateMaze()
     {
@@ -151,6 +186,7 @@ public class MazeGenerator : MonoBehaviour
             wallList.Add(new Vector2Int(x, y + 1));
     }
 
+
     IEnumerator ProcessWall(Vector2Int wall)
     {
         int x = wall.x;
@@ -182,15 +218,6 @@ public class MazeGenerator : MonoBehaviour
                 }
             }
         }
-    }
-
-    void SetCell(int x, int y, bool isWall)
-    {
-        Destroy(grid[x, y].Instance);
-        grid[x, y].IsWall = isWall;
-        grid[x, y].IsVisited = true;
-        Vector3 position = new Vector3(x, 0, y);
-        grid[x, y].Instance = Instantiate(isWall ? wallPrefab : floorPrefab, position, Quaternion.identity, transform);
     }
 
     List<Vector2Int> GetNeighbors(int x, int y)

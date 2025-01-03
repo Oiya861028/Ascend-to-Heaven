@@ -1,13 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class MazeGenerator : MonoBehaviour
@@ -20,14 +11,8 @@ public class MazeGenerator : MonoBehaviour
         public CellState CellState;
     }
     
-    // Lab-specific settings
-    public float generationDelay = 0.025f;
-    
-    // Hidden reward probabilities from lab spec
-    public float hiddenBadProb = 0.2f;  // 20% chance of penalty
-    public float hiddenGoodProb = 0.2f; // 20% chance of reward
-
-    // Reward values from lab spec
+    public float hiddenBadProb = 0.2f;
+    public float hiddenGoodProb = 0.2f;
     public float goodReward = 10f;
     public float badPenalty = -5f;
     
@@ -40,20 +25,13 @@ public class MazeGenerator : MonoBehaviour
     public Vector2Int endPosition = new Vector2Int(19, 19);
 
     public Cell[,] grid;
-    private List<Vector2Int> wallList;
     public Node[,] nodes;
-    private List<Node> openList;
-    private HashSet<Node> closedList;
+    public Stack<Vector2Int> stack = new Stack<Vector2Int>();
 
     void Start()
     {
         InitializeGrid();
-        StartCoroutine(GenerateMazeAndPath());
-    }
-
-    IEnumerator GenerateMazeAndPath()
-    {
-        yield return StartCoroutine(GenerateMaze());
+        GenerateMaze();
         InitializeNodes();
         AssignHiddenRewards();
         PlaceCharacters();
@@ -69,14 +47,105 @@ public class MazeGenerator : MonoBehaviour
                 grid[x, y] = new Cell();
                 Vector3 position = new Vector3(x, 0, y);
                 grid[x, y].Instance = Instantiate(wallPrefab, position, Quaternion.identity, transform);
-                
-                // Add CellState component to the instance
-                CellState cellState = grid[x, y].Instance.AddComponent<CellState>();
-                cellState.x = x;
-                cellState.y = y;
-                grid[x, y].CellState = cellState;
+                grid[x, y].CellState = grid[x, y].Instance.AddComponent<CellState>();
+                grid[x, y].CellState.x = x;
+                grid[x, y].CellState.y = y;
             }
         }
+    }
+
+    void GenerateMaze()
+    {
+        Vector2Int current = new Vector2Int(1, 1);
+        stack.Push(current);
+        SetCell(current.x, current.y, false);
+
+        while (stack.Count > 0)
+        {
+            current = stack.Pop();
+            List<Vector2Int> unvisitedNeighbors = GetUnvisitedNeighbors(current);
+
+            if (unvisitedNeighbors.Count > 0)
+            {
+                stack.Push(current);
+                Vector2Int next = unvisitedNeighbors[Random.Range(0, unvisitedNeighbors.Count)];
+                SetCell((current.x + next.x) / 2, (current.y + next.y) / 2, false);
+                SetCell(next.x, next.y, false);
+                stack.Push(next);
+            }
+        }
+
+        EnsurePath(startPosition, endPosition);
+    }
+
+    List<Vector2Int> GetUnvisitedNeighbors(Vector2Int pos)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+        Vector2Int[] directions = {
+            new Vector2Int(0, 2), // Up
+            new Vector2Int(2, 0), // Right
+            new Vector2Int(0, -2), // Down
+            new Vector2Int(-2, 0) // Left
+        };
+
+        foreach (Vector2Int dir in directions)
+        {
+            Vector2Int newPos = new Vector2Int(pos.x + dir.x, pos.y + dir.y);
+            if (IsInBounds(newPos) && !grid[newPos.x, newPos.y].IsVisited)
+            {
+                neighbors.Add(newPos);
+            }
+        }
+        
+        return neighbors;
+    }
+
+    bool IsInBounds(Vector2Int pos)
+    {
+        return pos.x > 0 && pos.x < width - 1 && pos.y > 0 && pos.y < height - 1;
+    }
+
+    void EnsurePath(Vector2Int start, Vector2Int end)
+    {
+        Vector2Int current = start;
+        while (current != end)
+        {
+            if (Random.value < 0.5f && current.x < end.x)
+            {
+                SetCell(current.x + 1, current.y, false);
+                SetCell(current.x + 2, current.y, false);
+                current.x += 2;
+            }
+            else if (current.y < end.y)
+            {
+                SetCell(current.x, current.y + 1, false);
+                SetCell(current.x, current.y + 2, false);
+                current.y += 2;
+            }
+            else if (current.x < end.x)
+            {
+                SetCell(current.x + 1, current.y, false);
+                SetCell(current.x + 2, current.y, false);
+                current.x += 2;
+            }
+        }
+    }
+
+    void SetCell(int x, int y, bool isWall)
+    {
+        if (grid[x, y] == null) return;
+        
+        Destroy(grid[x, y].Instance);
+        grid[x, y].IsWall = isWall;
+        grid[x, y].IsVisited = true;
+        Vector3 position = new Vector3(x, 0, y);
+        grid[x, y].Instance = Instantiate(isWall ? wallPrefab : floorPrefab, position, Quaternion.identity, transform);
+        
+        CellState cellState = grid[x, y].Instance.AddComponent<CellState>();
+        cellState.x = x;
+        cellState.y = y;
+        cellState.isWalkable = !isWall;
+        grid[x, y].CellState = cellState;
     }
 
     void AssignHiddenRewards()
@@ -95,12 +164,10 @@ public class MazeGenerator : MonoBehaviour
                         if (randVal < hiddenGoodProb)
                         {
                             cellState.hiddenReward = goodReward;
-                            Debug.Log($"Assigned good reward to cell ({x}, {y})");
                         }
                         else if (randVal < hiddenGoodProb + hiddenBadProb)
                         {
                             cellState.hiddenReward = badPenalty;
-                            Debug.Log($"Assigned bad penalty to cell ({x}, {y})");
                         }
                         else
                         {
@@ -114,253 +181,28 @@ public class MazeGenerator : MonoBehaviour
 
     void PlaceCharacters()
     {
-        // Place player at start
         GameObject player = GameObject.Find("Player");
         if (player != null)
         {
             player.transform.position = new Vector3(startPosition.x, 1, startPosition.y);
         }
 
-        // Place NPC at end
         GameObject npc = GameObject.Find("NPC");
         if (npc != null)
         {
             npc.transform.position = new Vector3(endPosition.x, 1, endPosition.y);
         }
     }
-    void SetCell(int x, int y, bool isWall)
-    {
-        Destroy(grid[x, y].Instance);
-        grid[x, y].IsWall = isWall;
-        grid[x, y].IsVisited = true;
-        Vector3 position = new Vector3(x, 0, y);
-        grid[x, y].Instance = Instantiate(isWall ? wallPrefab : floorPrefab, position, Quaternion.identity, transform);
-        
-        // Add CellState component to new instance
-        CellState cellState = grid[x, y].Instance.AddComponent<CellState>();
-        cellState.x = x;
-        cellState.y = y;
-        cellState.isWalkable = !isWall;
-        grid[x, y].CellState = cellState;
-    }
 
-    
-
-    IEnumerator GenerateMaze()
-    {
-        wallList = new List<Vector2Int>();
-
-        int startX = Random.Range(1, width - 1);
-        int startY = Random.Range(1, height - 1);
-
-        startX = startX % 2 == 0 ? startX - 1 : startX;
-        startY = startY % 2 == 0 ? startY - 1 : startY;
-
-        SetCell(startX, startY, false);
-        yield return new WaitForSeconds(generationDelay);
-
-        AddWallsToList(startX, startY);
-        
-        while (wallList.Count > 0)
-        {
-            int randomIndex = Random.Range(0, wallList.Count);
-            Vector2Int wall = wallList[randomIndex];
-            wallList.RemoveAt(randomIndex);
-
-            yield return StartCoroutine(ProcessWall(wall));
-        }
-    }
-
-    void AddWallsToList(int x, int y)
-    {
-        if (x - 2 > 0) 
-            wallList.Add(new Vector2Int(x - 1, y));
-
-        if (x + 2 < width - 1) 
-            wallList.Add(new Vector2Int(x + 1, y));
-
-        if (y - 2 > 0)
-            wallList.Add(new Vector2Int(x, y - 1));
-
-        if (y + 2 < height - 1)
-            wallList.Add(new Vector2Int(x, y + 1));
-    }
-
-
-    IEnumerator ProcessWall(Vector2Int wall)
-    {
-        int x = wall.x;
-        int y = wall.y;
-
-        List<Vector2Int> neighbors = GetNeighbors(x, y);
-
-        if (neighbors.Count == 2)
-        {
-            Cell cell1 = grid[neighbors[0].x, neighbors[0].y];
-            Cell cell2 = grid[neighbors[1].x, neighbors[1].y];
-
-            if (cell1.IsVisited != cell2.IsVisited)
-            {
-                SetCell(x, y, false);
-                yield return new WaitForSeconds(generationDelay);
-
-                if (!cell1.IsVisited)
-                {
-                    SetCell(neighbors[0].x, neighbors[0].y, false);
-                    yield return new WaitForSeconds(generationDelay);
-                    AddWallsToList(neighbors[0].x, neighbors[0].y);
-                }
-                else
-                {
-                    SetCell(neighbors[1].x, neighbors[1].y, false);
-                    yield return new WaitForSeconds(generationDelay);
-                    AddWallsToList(neighbors[1].x, neighbors[1].y);
-                }
-            }
-        }
-    }
-
-    List<Vector2Int> GetNeighbors(int x, int y)
-    {
-        List<Vector2Int> neighbors = new List<Vector2Int>();
-
-        if (x % 2 == 1)
-        {
-            if (y - 1 >= 0) neighbors.Add(new Vector2Int(x, y - 1));
-            if (y + 1 < height) neighbors.Add(new Vector2Int(x, y + 1));
-        }
-        else if (y % 2 == 1)
-        {
-            if (x - 1 >= 0) neighbors.Add(new Vector2Int(x - 1, y));
-            if (x + 1 < width) neighbors.Add(new Vector2Int(x + 1, y));
-        }
-
-        return neighbors;
-    }
-
-    // A* Pathfinding Implementation
     void InitializeNodes()
     {
         nodes = new Node[width, height];
-
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                bool isWalkable = !grid[x, y].IsWall;
-                nodes[x, y] = new Node(new Vector2Int(x, y), isWalkable);
+                nodes[x, y] = new Node(new Vector2Int(x, y), !grid[x, y].IsWall);
             }
-        }
-    }
-
-    void FindPath(Vector2Int startPos, Vector2Int endPos)
-    {
-        Node startNode = nodes[startPos.x, startPos.y];
-        Node endNode = nodes[endPos.x, endPos.y];
-
-        openList = new List<Node> { startNode };
-        closedList = new HashSet<Node>();
-
-        startNode.GCost = 0;
-        startNode.HCost = GetHeuristic(startNode, endNode);
-
-        while (openList.Count > 0)
-        {
-            Node currentNode = GetLowestFCostNode(openList);
-
-            if (currentNode == endNode)
-            {
-                RetracePath(startNode, endNode);
-                return;
-            }
-
-            openList.Remove(currentNode);
-            closedList.Add(currentNode);
-
-            foreach (Node neighbor in GetNeighbors(currentNode))
-            {
-                if (!neighbor.IsWalkable || closedList.Contains(neighbor))
-                    continue;
-
-                int tentativeGCost = currentNode.GCost + GetDistance(currentNode, neighbor);
-
-                if (tentativeGCost < neighbor.GCost || !openList.Contains(neighbor))
-                {
-                    neighbor.GCost = tentativeGCost;
-                    neighbor.HCost = GetHeuristic(neighbor, endNode);
-                    neighbor.ParentNode = currentNode;
-
-                    if (!openList.Contains(neighbor))
-                        openList.Add(neighbor);
-                }
-            }
-        }
-    }
-
-    int GetHeuristic(Node a, Node b)
-    {
-        int dx = Mathf.Abs(a.GridPosition.x - b.GridPosition.x);
-        int dy = Mathf.Abs(a.GridPosition.y - b.GridPosition.y);
-        return dx + dy;
-    }
-
-    int GetDistance(Node a, Node b)
-    {
-        return 1;
-    }
-
-    Node GetLowestFCostNode(List<Node> nodeList)
-    {
-        Node lowestFCostNode = nodeList[0];
-
-        foreach (Node node in nodeList)
-        {
-            if (node.FCost < lowestFCostNode.FCost ||
-                (node.FCost == lowestFCostNode.FCost && node.HCost < lowestFCostNode.HCost))
-            {
-                lowestFCostNode = node;
-            }
-        }
-
-        return lowestFCostNode;
-    }
-
-    List<Node> GetNeighbors(Node node)
-    {
-        List<Node> neighbors = new List<Node>();
-        int x = node.GridPosition.x;
-        int y = node.GridPosition.y;
-
-        if (x - 1 >= 0) neighbors.Add(nodes[x - 1, y]);
-        if (x + 1 < width) neighbors.Add(nodes[x + 1, y]);
-        if (y - 1 >= 0) neighbors.Add(nodes[x, y - 1]);
-        if (y + 1 < height) neighbors.Add(nodes[x, y + 1]);
-
-        return neighbors;
-    }
-
-    void RetracePath(Node startNode, Node endNode)
-    {
-        List<Node> path = new List<Node>();
-        Node currentNode = endNode;
-
-        while (currentNode != startNode)
-        {
-            path.Add(currentNode);
-            currentNode = currentNode.ParentNode;
-        }
-
-        path.Reverse();
-        StartCoroutine(DrawPath(path));
-    }
-
-    IEnumerator DrawPath(List<Node> path)
-    {
-        foreach (Node node in path)
-        {
-            Vector3 position = new Vector3(node.GridPosition.x, 0.5f, node.GridPosition.y);
-            GameObject marker = Instantiate(pathMarkerPrefab, position, Quaternion.identity);
-            yield return new WaitForSeconds(0.05f);
         }
     }
 }

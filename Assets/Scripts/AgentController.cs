@@ -11,17 +11,17 @@ public class AgentController : MonoBehaviour
     public float senseRadius = 2f;      // Sense a bit further
     public float explorationWeight = 0.3f; // How much to value exploring vs exploiting
     
-    private Vector3 targetPosition;
-    private MazeGenerator mazeGenerator;
-    private float updatePathTimer = 0f;
-    private float updatePathInterval = 1f;
-    private int score = 0;
-    private float senseTimer = 0f;
+    public Vector3 targetPosition;
+    public MazeGenerator mazeGenerator;
+    public float updatePathTimer = 0f;
+    public float updatePathInterval = 1f;
+    public int score = 0;
+    public float senseTimer = 0f;
 
-    private List<Vector3> currentPath = new List<Vector3>();
-    private int currentWaypointIndex = 0;
-    private HashSet<Vector2Int> visitedCells = new HashSet<Vector2Int>();
-    private Dictionary<Vector2Int, float> knownRewards = new Dictionary<Vector2Int, float>();
+    public List<Vector3> currentPath = new List<Vector3>();
+    public int currentWaypointIndex = 0;
+    public HashSet<Vector2Int> visitedCells = new HashSet<Vector2Int>();
+    public Dictionary<Vector2Int, float> knownRewards = new Dictionary<Vector2Int, float>();
 
     public int GetScore() { return score; }
 
@@ -393,12 +393,12 @@ public class AgentController : MonoBehaviour
         }
     }
 
-    private int CalculateHCost(Vector2Int pos, Vector2Int target)
+    public int CalculateHCost(Vector2Int pos, Vector2Int target)
     {
         return Mathf.Abs(pos.x - target.x) + Mathf.Abs(pos.y - target.y);
     }
 
-    private Node GetLowestFCostNode(List<Node> nodeList)
+    public Node GetLowestFCostNode(List<Node> nodeList)
     {
         if (nodeList == null || nodeList.Count == 0) return null;
         
@@ -419,7 +419,7 @@ public class AgentController : MonoBehaviour
         return lowestNode;
     }
 
-    private List<Node> GetNeighbors(Node node)
+    public List<Node> GetNeighbors(Node node)
     {
         List<Node> neighbors = new List<Node>();
         if (node == null) return neighbors;

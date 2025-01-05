@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using UnityEngine.UIElements;
 
 public class MazeGenerator : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class MazeGenerator : MonoBehaviour
     
     public int width = 21;
     public int height = 21;
+    public float scaleFactor = 2f;
     public GameObject wallPrefab;
     public GameObject floorPrefab;
     public GameObject pathMarkerPrefab;
@@ -45,7 +48,7 @@ public class MazeGenerator : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 grid[x, y] = new Cell();
-                Vector3 position = new Vector3(x, 0, y);
+                Vector3 position = new Vector3(x*scaleFactor, 1, y*scaleFactor);
                 grid[x, y].Instance = Instantiate(wallPrefab, position, Quaternion.identity, transform);
                 grid[x, y].CellState = grid[x, y].Instance.AddComponent<CellState>();
                 grid[x, y].CellState.x = x;
@@ -68,7 +71,7 @@ public class MazeGenerator : MonoBehaviour
             if (unvisitedNeighbors.Count > 0)
             {
                 stack.Push(current);
-                Vector2Int next = unvisitedNeighbors[Random.Range(0, unvisitedNeighbors.Count)];
+                Vector2Int next = unvisitedNeighbors[UnityEngine.Random.Range(0, unvisitedNeighbors.Count)];
                 SetCell((current.x + next.x) / 2, (current.y + next.y) / 2, false);
                 SetCell(next.x, next.y, false);
                 stack.Push(next);
@@ -110,7 +113,7 @@ public class MazeGenerator : MonoBehaviour
         Vector2Int current = start;
         while (current != end)
         {
-            if (Random.value < 0.5f && current.x < end.x)
+            if (UnityEngine.Random.value < 0.5f && current.x < end.x)
             {
                 SetCell(current.x + 1, current.y, false);
                 SetCell(current.x + 2, current.y, false);
@@ -134,18 +137,38 @@ public class MazeGenerator : MonoBehaviour
     void SetCell(int x, int y, bool isWall)
     {
         if (grid[x, y] == null) return;
-        
+
         Destroy(grid[x, y].Instance);
         grid[x, y].IsWall = isWall;
         grid[x, y].IsVisited = true;
-        Vector3 position = new Vector3(x, 0, y);
+        Vector3 position = new Vector3(x * scaleFactor, 0, y * scaleFactor);
         grid[x, y].Instance = Instantiate(isWall ? wallPrefab : floorPrefab, position, Quaternion.identity, transform);
-        
+
         CellState cellState = grid[x, y].Instance.AddComponent<CellState>();
         cellState.x = x;
         cellState.y = y;
         cellState.isWalkable = !isWall;
+
+        if (cellState.isWalkable)
+        {
+            int wallCount = 0;
+
+            // Assuming you have a method to check if a neighboring cell is a wall
+            if (IsWall(cellState.x - 1, cellState.y)) wallCount++; // Check left
+            if (IsWall(cellState.x + 1, cellState.y)) wallCount++; // Check right
+            if (IsWall(cellState.x, cellState.y - 1)) wallCount++; // Check below
+            if (IsWall(cellState.x, cellState.y + 1)) wallCount++; // Check above
+
+            if (wallCount == 3)
+            {
+                // This is a corner cell
+            }
+        }
         grid[x, y].CellState = cellState;
+    }
+
+    private bool IsWall(int x, int y){
+        return grid[x,y].CellState != null && grid[x,y].CellState.isWalkable;
     }
 
     void AssignHiddenRewards()
@@ -156,7 +179,7 @@ public class MazeGenerator : MonoBehaviour
             {
                 if (!grid[x, y].IsWall)
                 {
-                    float randVal = Random.value;
+                    float randVal = UnityEngine.Random.value;
                     CellState cellState = grid[x, y].CellState;
 
                     if (cellState != null)
@@ -184,13 +207,13 @@ public class MazeGenerator : MonoBehaviour
         GameObject player = GameObject.Find("Player");
         if (player != null)
         {
-            player.transform.position = new Vector3(startPosition.x, 1, startPosition.y);
+            player.transform.position = new Vector3(startPosition.x*scaleFactor, 1, startPosition.y*scaleFactor);
         }
 
         GameObject npc = GameObject.Find("NPC");
         if (npc != null)
         {
-            npc.transform.position = new Vector3(endPosition.x, 1, endPosition.y);
+            npc.transform.position = new Vector3(endPosition.x*scaleFactor, 1, endPosition.y*scaleFactor);
         }
     }
 

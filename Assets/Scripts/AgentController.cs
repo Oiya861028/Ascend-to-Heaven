@@ -11,10 +11,12 @@ public class AgentController : MonoBehaviour
     public float senseRadius = 2f;      // Sense a bit further
     public float explorationWeight = 0.3f; // How much to value exploring vs exploiting
     
+    // Target position and pathfinding
     public Vector3 targetPosition;
     public MazeGenerator mazeGenerator;
     public float updatePathTimer = 0f;
     public float updatePathInterval = 1f;
+    public float mapScale = 2f;
     public int score = 0;
     public float senseTimer = 0f;
 
@@ -106,36 +108,35 @@ public class AgentController : MonoBehaviour
             }
         }
     }
-
-    void DecideNextMove()
+        void DecideNextMove()
     {
         Vector2Int currentPos = new Vector2Int(
-            Mathf.RoundToInt(transform.position.x),
-            Mathf.RoundToInt(transform.position.z)
+            Mathf.RoundToInt(transform.position.x / mazeGenerator.scaleFactor),
+            Mathf.RoundToInt(transform.position.z / mazeGenerator.scaleFactor)
         );
-
+    
         // Find best known reward within reasonable distance
         Vector2Int bestTarget = currentPos;
         float bestValue = float.MinValue;
-
+    
         foreach (var rewardInfo in knownRewards)
         {
             Vector2Int pos = rewardInfo.Key;
             float reward = rewardInfo.Value;
-            
+    
             // Skip if we've already visited this cell
             if (visitedCells.Contains(pos)) continue;
-
+    
             // Calculate distance-adjusted value
             float distance = Vector2.Distance(currentPos, pos);
             float distanceWeight = 1f / (1f + distance); // Closer tiles are worth more
-            
+    
             // Add exploration bonus for unvisited areas
             float explorationBonus = !visitedCells.Contains(pos) ? explorationWeight : 0f;
-            
+    
             // Calculate total value considering reward, distance, and exploration
             float value = (reward * distanceWeight) + explorationBonus;
-
+    
             if (value > bestValue && IsValidPosition(pos.x, pos.y))
             {
                 bestValue = value;
@@ -143,21 +144,21 @@ public class AgentController : MonoBehaviour
                 Debug.Log($"Found better target at ({pos.x}, {pos.y}) with value {value}");
             }
         }
-
+    
         // If we didn't find a good known reward, explore!
         if (bestTarget == currentPos)
         {
             bestTarget = FindExplorationTarget(currentPos);
             Debug.Log("No good rewards found, exploring new area");
         }
-
+    
         // Set new path
         if (bestTarget != currentPos)
         {
             FindPath(currentPos, bestTarget);
-            Debug.Log($"Setting new path to ({bestTarget.x}, {bestTarget.y})");
         }
     }
+    
 
     Vector2Int FindExplorationTarget(Vector2Int currentPos)
     {

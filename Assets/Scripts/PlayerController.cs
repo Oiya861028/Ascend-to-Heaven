@@ -9,6 +9,10 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 5f;
     public LayerMask groundMask;
 
+    [Header("Audio Settings")]
+    public AudioClip runningSound;
+
+    private AudioSource audioSource;
     [Header("Sensing Settings")]
     public float senseRadius = 1.5f;
     public KeyCode senseKey = KeyCode.E;
@@ -55,6 +59,14 @@ public class PlayerController : MonoBehaviour
                 cameraObj.transform.localPosition = new Vector3(0, 1.6f, 0); // Approximate eye height
             }
         }
+        // Set up AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.clip = runningSound;
+        audioSource.loop = true;
 
         mazeGenerator = FindObjectOfType<MazeGenerator>();
         
@@ -71,11 +83,27 @@ public class PlayerController : MonoBehaviour
         // Handle movement
         HandleMovement();
 
+        // Check if sprint key is pressed
+        if (Input.GetKey(sprintKey))
+        {
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+        }
         // Handle sensing
         if (Input.GetKeyDown(senseKey))
         {
             SenseNearbyTiles();
         }
+
 
         // Handle cursor lock toggle
         if (Input.GetKeyDown(KeyCode.Escape))

@@ -7,6 +7,7 @@ public class CellState : MonoBehaviour
     public bool isWalkable = true;
     public float hiddenReward = 0f;
     public bool isRevealed = false;
+    public bool isCornerCell = false;
     
     private Material originalMaterial;
     private Renderer cellRenderer;

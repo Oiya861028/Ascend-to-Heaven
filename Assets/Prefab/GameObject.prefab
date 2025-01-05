@@ -44,7 +44,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3745481cfef5e45a091134bfcb77aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hiddenBadProb: 0.2
+  hiddenGoodProb: 0.2
+  goodReward: 10
+  badPenalty: -5
   width: 21
   height: 21
+  scaleFactor: 2
   wallPrefab: {fileID: 8888894509561201240, guid: 7ff10a41a5dbd7f4dbffa69e9e12f102, type: 3}
   floorPrefab: {fileID: 1415802485292939538, guid: daeadaa2f0eaad5459f4d074e6c9939a, type: 3}
+  pathMarkerPrefab: {fileID: 8499024242089193898, guid: 6d127a221535a9c4ba013f96b69d948d, type: 3}
+  startPosition: {x: 1, y: 1}
+  endPosition: {x: 19, y: 19}

@@ -10,9 +10,11 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
 
     [Header("Audio Settings")]
-    public AudioClip runningSound;
+    public AudioClip breathing_sound;
+    public AudioClip footstep;
 
-    private AudioSource audioSource;
+    private AudioSource BreathingAudioSource;
+    private AudioSource footStepAudioSource;
 
     private float audioFadeSpeed = 5f;
     [Header("Sensing Settings")]
@@ -61,15 +63,14 @@ public class PlayerController : MonoBehaviour
                 cameraObj.transform.localPosition = new Vector3(0, 1.6f, 0); // Approximate eye height
             }
         }
-        // Set up AudioSource
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-        audioSource.clip = runningSound;
-        audioSource.loop = true;
+        // Set up AudioSources
+        BreathingAudioSource = gameObject.AddComponent<AudioSource>();
+        BreathingAudioSource.clip = breathing_sound;
+        BreathingAudioSource.loop = true;
 
+        footStepAudioSource = gameObject.AddComponent<AudioSource>(); 
+        footStepAudioSource.clip = footstep;
+        footStepAudioSource.loop = true;
         mazeGenerator = FindObjectOfType<MazeGenerator>();
         
         // Lock and hide cursor
@@ -88,20 +89,35 @@ public class PlayerController : MonoBehaviour
         // Check if sprint key is pressed
         if (Input.GetKey(sprintKey))
         {
-            if (!audioSource.isPlaying)
+            if (!BreathingAudioSource.isPlaying)
             {
-                audioSource.Play();
+                BreathingAudioSource.Play();
             }
-            audioSource.volume = Mathf.Lerp(audioSource.volume, 1f, audioFadeSpeed * Time.deltaTime);
+            BreathingAudioSource.volume = Mathf.Lerp(BreathingAudioSource.volume, .75f, audioFadeSpeed * Time.deltaTime);
+
+            if (!footStepAudioSource.isPlaying)
+            {
+                footStepAudioSource.Play();
+            }
+            footStepAudioSource.volume = Mathf.Lerp(footStepAudioSource.volume, 1f, audioFadeSpeed * Time.deltaTime);
         }
         else
         {
-            if (audioSource.isPlaying)
+            if (BreathingAudioSource.isPlaying)
             {
-                audioSource.volume = Mathf.Lerp(audioSource.volume, 0f, audioFadeSpeed * Time.deltaTime);
-                if (audioSource.volume <= 0.01f)
+                BreathingAudioSource.volume = Mathf.Lerp(BreathingAudioSource.volume, 0f, audioFadeSpeed * Time.deltaTime);
+                if (BreathingAudioSource.volume <= 0.01f)
                 {
-                    audioSource.Stop();
+                    BreathingAudioSource.Stop();
+                }
+            }
+
+            if (footStepAudioSource.isPlaying)
+            {
+                footStepAudioSource.volume = Mathf.Lerp(footStepAudioSource.volume, 0f, audioFadeSpeed * Time.deltaTime);
+                if (footStepAudioSource.volume <= 0.01f)
+                {
+                    footStepAudioSource.Stop();
                 }
             }
         }

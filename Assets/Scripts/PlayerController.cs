@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip runningSound;
 
     private AudioSource audioSource;
+
+    private float audioFadeSpeed = 5f;
     [Header("Sensing Settings")]
     public float senseRadius = 1.5f;
     public KeyCode senseKey = KeyCode.E;
@@ -90,12 +92,17 @@ public class PlayerController : MonoBehaviour
             {
                 audioSource.Play();
             }
+            audioSource.volume = Mathf.Lerp(audioSource.volume, 1f, audioFadeSpeed * Time.deltaTime);
         }
         else
         {
             if (audioSource.isPlaying)
             {
-                audioSource.Stop();
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 0f, audioFadeSpeed * Time.deltaTime);
+                if (audioSource.volume <= 0.01f)
+                {
+                    audioSource.Stop();
+                }
             }
         }
         // Handle sensing

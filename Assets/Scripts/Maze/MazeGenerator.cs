@@ -5,13 +5,9 @@ using UnityEngine.UIElements;
 
 public class MazeGenerator : MonoBehaviour
 {
-    public class Cell
-    {
-        public bool IsVisited = false;
-        public bool IsWall = true;
-        public GameObject Instance;
-        public CellState CellState;
-    }
+    //Set up singleton
+    public static MazeGenerator Instance { get; private set; }
+
     
     public float hiddenBadProb = 0.2f;
     public float hiddenGoodProb = 0.2f;
@@ -31,13 +27,22 @@ public class MazeGenerator : MonoBehaviour
     public Node[,] nodes;
     public Stack<Vector2Int> stack = new Stack<Vector2Int>();
 
-    void Start()
+    void Awake()
     {
         InitializeGrid();
         GenerateMaze();
         InitializeNodes();
         AssignHiddenRewards();
         PlaceCharacters();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void InitializeGrid()

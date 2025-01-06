@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2235130230376997676}
   - component: {fileID: 8030592463639616928}
+  - component: {fileID: 1701979113775467104}
   m_Layer: 0
   m_Name: Maze Generator
   m_TagString: Untagged
@@ -56,3 +57,16 @@ MonoBehaviour:
   pathMarkerPrefab: {fileID: 8499024242089193898, guid: 6d127a221535a9c4ba013f96b69d948d, type: 3}
   startPosition: {x: 1, y: 1}
   endPosition: {x: 19, y: 19}
+--- !u!114 &1701979113775467104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8720339271678605546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 944292d86770c2548b09b06aaad08a0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyPrefab: {fileID: 1882360880522581050, guid: 211ccfd13f01e8246a845442a92dc03c, type: 3}

@@ -2,41 +2,46 @@ using UnityEngine;
 
 public class AudioPlayer : MonoBehaviour
 {
-    public bool sprint = false; // Boolean to check if sprint is true
-    public AudioSource audioSource1; // Reference to the first audio source
-    public AudioSource audioSource2; // Reference to the second audio source
+    public AudioSource BreathingAudioSource; // Reference to the first audio source
+    public AudioSource footStepAudioSource; // Reference to the second audio source
+    public float audioFadeSpeed = 5f; // Speed at which the audio fades in and out
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        // Ensure the audio sources are not playing at the start
-        audioSource1.Stop();
-        audioSource2.Stop();
-    }
 
     // Update is called once per frame
     void Update()
     {
-        if (sprint)
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (!audioSource1.isPlaying)
+            if (!BreathingAudioSource.isPlaying)
             {
-                audioSource1.Play();
+                BreathingAudioSource.Play();
             }
-            if (!audioSource2.isPlaying)
+            BreathingAudioSource.volume = Mathf.Lerp(BreathingAudioSource.volume, .75f, audioFadeSpeed * Time.deltaTime);
+
+            if (!footStepAudioSource.isPlaying)
             {
-                audioSource2.Play();
+                footStepAudioSource.Play();
             }
+            footStepAudioSource.volume = Mathf.Lerp(footStepAudioSource.volume, 1f, audioFadeSpeed * Time.deltaTime);
         }
         else
         {
-            if (audioSource1.isPlaying)
+            if (BreathingAudioSource.isPlaying)
             {
-                audioSource1.Stop();
+                BreathingAudioSource.volume = Mathf.Lerp(BreathingAudioSource.volume, 0f, audioFadeSpeed * Time.deltaTime);
+                if (BreathingAudioSource.volume <= 0.01f)
+                {
+                    BreathingAudioSource.Stop();
+                }
             }
-            if (audioSource2.isPlaying)
+
+            if (footStepAudioSource.isPlaying)
             {
-                audioSource2.Stop();
+                footStepAudioSource.volume = Mathf.Lerp(footStepAudioSource.volume, 0f, audioFadeSpeed * Time.deltaTime);
+                if (footStepAudioSource.volume <= 0.01f)
+                {
+                    footStepAudioSource.Stop();
+                }
             }
         }
     }

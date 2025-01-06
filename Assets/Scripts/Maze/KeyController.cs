@@ -49,6 +49,7 @@ public class KeyController : MonoBehaviour
 
             Vector3 position = new Vector3(RandomCellPosition.x, 0, RandomCellPosition.y); // Adjust position as needed
             keys[i] = Instantiate(keyPrefab, position, Quaternion.identity);
+            keys[i].tag = "Key";
         }
         StartCoroutine(RespawnKeys());
     }

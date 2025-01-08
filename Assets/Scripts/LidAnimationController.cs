@@ -4,7 +4,7 @@ using UnityEngine;
 public class LidAnimationController : MonoBehaviour
 {
     
-    public Transform player;
+    public GameObject player;
     public float maxDistance = 5f; // Maximum distance to consider for rotation
     public Transform lidPivot;
 

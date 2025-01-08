@@ -670,6 +670,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7561464662103921843}
+  - component: {fileID: 2554307809192573412}
   m_Layer: 0
   m_Name: Item_Dynamite
   m_TagString: Untagged
@@ -694,3 +695,18 @@ Transform:
   - {fileID: 8616118586680383897}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2554307809192573412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9176427228303195048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db0ba2d6a51714a54ab62a221ea58600, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 5
+  icon: {fileID: 0}
+  explosionRadius: 5

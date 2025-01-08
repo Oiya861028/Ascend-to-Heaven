@@ -130,6 +130,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8512495657565486727}
+  - component: {fileID: -4679606249805707861}
   m_Layer: 0
   m_Name: Item_Portal
   m_TagString: Untagged
@@ -154,6 +155,21 @@ Transform:
   - {fileID: 3812871146800031857}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-4679606249805707861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342920449745245326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ac2d5b2c5b21456ea9a9a8faf973880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  icon: {fileID: 0}
+  teleportRadius: 10
 --- !u!1 &2491106906559434837
 GameObject:
   m_ObjectHideFlags: 0

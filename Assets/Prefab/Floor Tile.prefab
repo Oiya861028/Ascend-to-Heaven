@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6749844459952093640}
   - component: {fileID: 3526305725519707533}
   - component: {fileID: 8361747828343884136}
+  - component: {fileID: 2143594300246456422}
   m_Layer: 0
   m_Name: Floor Tile
   m_TagString: Untagged
@@ -65,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 13c20d10f1098fe4db032594e1fe5a95, type: 2}
+  - {fileID: 2100000, guid: 3a00b84d9284d254080983707c886839, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,3 +109,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!205 &2143594300246456422
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415802485292939538}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 1
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.25291714
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3526305725519707533}
+  m_Enabled: 1

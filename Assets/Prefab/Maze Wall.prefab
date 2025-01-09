@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1460020999704523356}
   m_Layer: 3
   m_Name: Maze Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

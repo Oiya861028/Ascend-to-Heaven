@@ -1,86 +1,35 @@
 using UnityEngine;
-
 public class Chest : MonoBehaviour
 {
-    [Header("Item Prefabs")]
-    public GameObject portalItemPrefab;
-    public GameObject compassItemPrefab;
-    public GameObject gogglesItemPrefab;
-    public GameObject spoonItemPrefab;
-    public GameObject dynamiteItemPrefab;
+    // Array to store item prefabs
+    public GameObject[] itemPrefabs;
     
-    [Header("Settings")]
-    public float interactRadius = 3f;
-    public AudioClip openSound;
+    // Distance player needs to be to interact
+    public float interactDistance = 2f;
     
     private bool isOpen = false;
-
-    private void OnTriggerEnter(Collider other)
+    private Transform playerTransform;
+    
+    void Start()
     {
-        if (!isOpen && other.CompareTag("Player"))
-        {
-            // Show some visual indicator that chest can be opened
-            // You can add a UI prompt or highlight effect here
-        }
+        // Get player reference
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
     
-    private void OnTriggerStay(Collider other)
+    void Update()
     {
-        if (!isOpen && other.CompareTag("Player") && Input.GetKeyDown(KeyCode.E))
+        // Check if player is close enough and presses E
+        if (!isOpen && 
+            Vector3.Distance(transform.position, playerTransform.position) <= interactDistance && 
+            Input.GetKeyDown(KeyCode.E))
         {
-            OpenChest();
+            // Spawn random item
+            int randomIndex = Random.Range(0, itemPrefabs.Length);
+            Instantiate(itemPrefabs[randomIndex], transform.position + Vector3.up, Quaternion.identity);
+            
+            // Mark as opened and destroy chest
+            isOpen = true;
+            Destroy(gameObject);
         }
-    }
-
-    private void OpenChest()
-    {
-        if (isOpen) return;
-        
-        isOpen = true;
-        
-        // Play open sound
-        if (openSound != null)
-        {
-            AudioSource.PlayClipAtPoint(openSound, transform.position);
-        }
-
-        // Spawn random item
-        SpawnRandomItem();
-        
-        // Optional: Play animation or particle effect
-        
-        // Destroy chest after delay
-        Destroy(gameObject, 0.5f);
-    }
-    
-    private void SpawnRandomItem()
-    {
-        // Create array of available item prefabs
-        GameObject[] itemPrefabs = new GameObject[] 
-        {
-            portalItemPrefab,
-            compassItemPrefab,
-            gogglesItemPrefab,
-            spoonItemPrefab,
-            dynamiteItemPrefab
-        };
-        
-        // Choose random item
-        int randomIndex = Random.Range(0, itemPrefabs.Length);
-        GameObject selectedPrefab = itemPrefabs[randomIndex];
-        
-        if (selectedPrefab != null)
-        {
-            // Spawn item slightly above chest
-            Vector3 spawnPosition = transform.position + Vector3.up * 1f;
-            Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
-        }
-    }
-
-    // Optional: Visualize interaction radius in editor
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, interactRadius);
     }
 }

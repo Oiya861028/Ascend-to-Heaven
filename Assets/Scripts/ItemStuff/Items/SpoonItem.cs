@@ -1,18 +1,22 @@
 using UnityEngine;
-
-public class SpoonItem : Item
+public class Spoon : Item
 {
-    public float range = 2f;
+    // Distance to check for walls
+    public float checkDistance = 2f;
     
-    public override void Use(PlayerController player)
+    public override void Use()
     {
+        // Cast ray forward from player
         RaycastHit hit;
-        if (Physics.Raycast(player.transform.position, player.transform.forward, out hit, range))
+        if (Physics.Raycast(playerTransform.position, playerTransform.forward, out hit, checkDistance))
         {
+            // If hit a wall, destroy it
             if (hit.collider.CompareTag("Wall"))
             {
                 Destroy(hit.collider.gameObject);
             }
         }
+        
+        OnUse();
     }
 }

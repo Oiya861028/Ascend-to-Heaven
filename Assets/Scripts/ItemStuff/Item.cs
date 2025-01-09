@@ -1,18 +1,19 @@
 using UnityEngine;
-public enum ItemType
-{
-    None,
-    Portal,
-    Compass,
-    Goggles,
-    Spoon,
-    Dynamite
-}
-
+using UnityEngine.UI;
 public abstract class Item : MonoBehaviour
 {
-    public ItemType type;
-    public Sprite icon;
+    // Reference to the UI image that shows the item
+    protected Image itemUIImage;
     
-    public abstract void Use(PlayerController player);
+    // Reference to the player transform
+    protected Transform playerTransform;
+    
+    // Virtual method that will be overridden by specific items
+    public abstract void Use();
+    
+    // Virtual method for cleanup after use
+    public virtual void OnUse()
+    {
+        Destroy(gameObject);
+    }
 }

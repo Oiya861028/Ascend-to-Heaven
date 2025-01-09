@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8512495657565486727}
   - component: {fileID: -4679606249805707861}
+  - component: {fileID: 231589055138734529}
   m_Layer: 0
   m_Name: Item_Portal
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,9 +47,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ac2d5b2c5b21456ea9a9a8faf973880, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
-  icon: {fileID: 0}
-  teleportRadius: 10
+  searchRadius: 20
+--- !u!135 &231589055138734529
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342920449745245326}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2491106906559434837
 GameObject:
   m_ObjectHideFlags: 0

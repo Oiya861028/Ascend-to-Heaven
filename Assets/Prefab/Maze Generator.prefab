@@ -70,3 +70,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyPrefab: {fileID: 1882360880522581050, guid: 211ccfd13f01e8246a845442a92dc03c, type: 3}
+  portal: {fileID: 2342920449745245326, guid: 596f1f42b28b5cd478607fe3c01fc79a, type: 3}
+  spoon: {fileID: 4845482352802513461, guid: a7837cfdd29acf047a873320040d9fd3, type: 3}
+  dynamite: {fileID: 9176427228303195048, guid: f1c82da72ed6cb44d9aa7ac3f2e22aa6, type: 3}
+  KeyRespawnTime: 5
+  spawnDistance: 5

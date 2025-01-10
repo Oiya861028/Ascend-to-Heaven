@@ -7,6 +7,9 @@ TagManager:
   - GoodItem
   - BadItem
   - Key
+  - CinemachineTarget
+  - Wall
+  - Item
   layers:
   - Default
   - TransparentFX

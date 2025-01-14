@@ -151,10 +151,6 @@ public class AgentController : MonoBehaviour
 
         // Move towards player
         transform.position += directionToPlayer * speed * Time.deltaTime;
-        
-        // Face the player
-        Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
         // Update current node for when we lose sight and need to pathfind again
         currentNode = new Vector2Int(
@@ -189,11 +185,22 @@ public class AgentController : MonoBehaviour
 
     void UpdateMovement()
     {
-        switch (currentState)
+        // Don't move or rotate if frozen
+        if (currentState == AgentState.Frozen)
+            return;
+
+        // Always face the player unless frozen
+        Vector3 directionToPlayer = (playerCamera.transform.position - transform.position);
+        directionToPlayer.y = 0; // Keep rotation only on horizontal plane
+        if (directionToPlayer != Vector3.zero)
         {
-            case AgentState.Frozen:
-                return;
-            
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer.normalized);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        // Handle movement based on state
+        switch (currentState)
+        {            
             case AgentState.Chasing:
                 ChasePlayer();
                 break;
@@ -260,10 +267,12 @@ public class AgentController : MonoBehaviour
             currentPathIndex++;
         }
 
-        // Face movement direction
-        if (moveDirection != Vector3.zero)
+        // Always face the player
+        Vector3 directionToPlayer = (playerCamera.transform.position - transform.position);
+        directionToPlayer.y = 0; // Keep rotation only on horizontal plane
+        if (directionToPlayer != Vector3.zero)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer.normalized);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
     }

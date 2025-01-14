@@ -373,7 +373,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 772b6c1c5f3874be58e6395962b76827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 0}
+  playerCamera: {fileID: 802473376}
   speed: 3
   rotationSpeed: 10
   checkInterval: 0.1
@@ -689,6 +689,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 940071689}
   m_SourcePrefab: {fileID: 100100000, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+--- !u!20 &802473376 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 4023082943457243782, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+  m_PrefabInstance: {fileID: 802473375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &813755777
 GameObject:
   m_ObjectHideFlags: 0

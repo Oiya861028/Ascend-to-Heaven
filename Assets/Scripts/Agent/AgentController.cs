@@ -8,32 +8,39 @@ public class AgentController : MonoBehaviour
 
     [Header("Movement Settings")]
     public float speed = 3f;
-    public float viewAngleThreshold = 60f;
+    public float rotationSpeed = 10f;
     public float checkInterval = 0.1f;
     
-    [Header("Debug")]
+    [Header("Detection Settings")]
+    public float viewAngleThreshold = 60f;
+    public float eyeHeightOffset = 2f;
     public bool showDebugInfo = true;
-    public bool isBeingViewed;
     
-    [Header("Sensing Settings")]
-    public float senseInterval = 0.5f;
-    public float senseRadius = 2f;
-    
-    [Header("Score")]
-    public int score = 0;
-
     [Header("Sound Detection")]
-    public Vector2Int? soundLocation = null;
     public float maxSoundRadius = 7f;
+    
+    [Header("State Info")]
+    public bool isBeingViewed;
+    public int score = 0;
+    public Vector2Int? soundLocation = null;
 
-    private float senseTimer = 0f;
     private float lastCheckTime;
     private MazeGenerator mazeGenerator;
-    private HashSet<Vector2Int> visitedCells = new HashSet<Vector2Int>();
-    private Dictionary<Vector2Int, float> knownRewards = new Dictionary<Vector2Int, float>();
     private List<Vector2Int> currentPath = new List<Vector2Int>();
     private int currentPathIndex = 0;
     private Vector2Int currentNode;
+    private Vector2Int? lastSoundLocation = null;
+    private Vector2Int? currentTarget = null;
+    private AgentState previousState;
+
+    private enum AgentState
+    {
+        Frozen,
+        Chasing,
+        Investigating,
+        Patrolling
+    }
+    private AgentState currentState = AgentState.Patrolling;
 
     void Start()
     {
@@ -45,15 +52,302 @@ public class AgentController : MonoBehaviour
         mazeGenerator = FindObjectOfType<MazeGenerator>();
         if (!mazeGenerator || !playerCamera)
         {
-            Debug.LogError("Missing references!");
+            Debug.LogError("Missing required references: MazeGenerator or PlayerCamera!");
+            enabled = false;
             return;
         }
 
+        // Find a random spawn point far from start (assuming start is at 0,0)
+        Vector2Int spawnPoint = FindFarSpawnPoint();
+        
+        // Set position to spawn point
+        transform.position = new Vector3(
+            spawnPoint.x * mazeGenerator.scaleFactor,
+            transform.position.y,
+            spawnPoint.y * mazeGenerator.scaleFactor
+        );
+
+        currentNode = spawnPoint;
+        previousState = AgentState.Patrolling;
+        
+        if (showDebugInfo) Debug.Log($"Agent spawned at: {spawnPoint}");
+    }
+
+    private Vector2Int FindFarSpawnPoint()
+    {
+        List<Vector2Int> validSpawnPoints = new List<Vector2Int>();
+        float minDistanceFromStart = Mathf.Min(mazeGenerator.width, mazeGenerator.height) * 0.75f; // At least 75% of maze size away
+
+        for (int x = 0; x < mazeGenerator.width; x++)
+        {
+            for (int y = 0; y < mazeGenerator.height; y++)
+            {
+                Vector2Int point = new Vector2Int(x, y);
+                float distanceFromStart = Vector2Int.Distance(point, Vector2Int.zero);
+
+                if (distanceFromStart >= minDistanceFromStart && 
+                    mazeGenerator.nodes[x, y].IsWalkable)
+                {
+                    validSpawnPoints.Add(point);
+                }
+            }
+        }
+
+        // If no points found meeting the distance criteria, fall back to any walkable point in the furthest third
+        if (validSpawnPoints.Count == 0)
+        {
+            float fallbackDistance = Mathf.Min(mazeGenerator.width, mazeGenerator.height) * 0.6f;
+            for (int x = 0; x < mazeGenerator.width; x++)
+            {
+                for (int y = 0; y < mazeGenerator.height; y++)
+                {
+                    Vector2Int point = new Vector2Int(x, y);
+                    float distanceFromStart = Vector2Int.Distance(point, Vector2Int.zero);
+
+                    if (distanceFromStart >= fallbackDistance && 
+                        mazeGenerator.nodes[x, y].IsWalkable)
+                    {
+                        validSpawnPoints.Add(point);
+                    }
+                }
+            }
+        }
+
+        // If still no valid points (very small maze?), just find any walkable point
+        if (validSpawnPoints.Count == 0)
+        {
+            for (int x = 0; x < mazeGenerator.width; x++)
+            {
+                for (int y = 0; y < mazeGenerator.height; y++)
+                {
+                    if (mazeGenerator.nodes[x, y].IsWalkable)
+                    {
+                        validSpawnPoints.Add(new Vector2Int(x, y));
+                    }
+                }
+            }
+        }
+
+        if (validSpawnPoints.Count == 0)
+        {
+            Debug.LogError("No valid spawn points found!");
+            return Vector2Int.zero;
+        }
+
+        return validSpawnPoints[Random.Range(0, validSpawnPoints.Count)];
+    }
+
+    void Update()
+    {
+        if (!mazeGenerator || !playerCamera) return;
+
+        UpdateStateCheck();
+        UpdateMovement();
+    }
+
+    void UpdateStateCheck()
+    {
+        if (Time.time - lastCheckTime < checkInterval && currentState != AgentState.Chasing) 
+            return;
+        
+        lastCheckTime = Time.time;
+        bool wasBeingViewed = isBeingViewed;
+        isBeingViewed = IsBeingViewedByCamera();
+
+        // Handle state transitions
+        if (isBeingViewed)
+        {
+            if (currentState != AgentState.Frozen)
+            {
+                previousState = currentState; // Store the state we're transitioning from
+            }
+            currentState = AgentState.Frozen;
+            if (showDebugInfo) Debug.Log("State: FROZEN - Being viewed by player");
+            return;
+        }
+        else if (wasBeingViewed && !isBeingViewed)
+        {
+            // We just stopped being viewed - resume previous state
+            currentState = previousState;
+            if (showDebugInfo) Debug.Log($"State: RESUMING {previousState} - No longer being viewed");
+        }
+
+        // Only update state if we're not frozen
+        if (currentState != AgentState.Frozen)
+        {
+            if (CanSeePlayer())
+            {
+                currentState = AgentState.Chasing;
+                currentPath.Clear();
+                if (showDebugInfo) Debug.Log("State: CHASING - Moving directly to player");
+            }
+            else if (soundLocation != lastSoundLocation)
+            {
+                currentState = AgentState.Investigating;
+                UpdateSoundInvestigation();
+                if (showDebugInfo) Debug.Log("State: INVESTIGATING - Following sound");
+            }
+            else if (currentPath.Count == 0 || currentPathIndex >= currentPath.Count)
+            {
+                currentState = AgentState.Patrolling;
+                // TODO: Add patrol point selection logic
+                if (showDebugInfo) Debug.Log("State: PATROLLING - Following patrol path");
+            }
+        }
+    }
+
+    bool CanSeePlayer()
+    {
+        if (!playerCamera) return false;
+
+        Vector3 rayStart = transform.position + Vector3.up * eyeHeightOffset;
+        Vector3 playerPosition = playerCamera.transform.position + Vector3.up;
+        Vector3 directionToPlayer = playerPosition - rayStart;
+        
+        RaycastHit hit;
+        if (!Physics.Raycast(rayStart, directionToPlayer.normalized, out hit, directionToPlayer.magnitude))
+        {
+            if (showDebugInfo) Debug.DrawLine(rayStart, playerPosition, Color.yellow);
+            return true;
+        }
+
+        if (showDebugInfo) Debug.DrawLine(rayStart, hit.point, Color.red);
+        return false;
+    }
+
+    void ChasePlayer()
+    {
+        // Direct movement towards player
+        Vector3 directionToPlayer = (playerCamera.transform.position - transform.position);
+        directionToPlayer.y = 0; // Keep movement on ground plane
+        directionToPlayer.Normalize();
+
+        // Move towards player
+        transform.position += directionToPlayer * speed * Time.deltaTime;
+
+        // Update current node for when we lose sight and need to pathfind again
         currentNode = new Vector2Int(
             Mathf.RoundToInt(transform.position.x / mazeGenerator.scaleFactor),
             Mathf.RoundToInt(transform.position.z / mazeGenerator.scaleFactor)
         );
-        visitedCells.Add(currentNode);
+    }
+
+    void UpdateSoundInvestigation()
+    {
+        lastSoundLocation = soundLocation;
+        
+        if (soundLocation.HasValue)
+        {
+            int distanceToSound = Mathf.Abs(currentNode.x - soundLocation.Value.x) + 
+                                Mathf.Abs(currentNode.y - soundLocation.Value.y);
+            
+            if (distanceToSound <= 1)
+            {
+                currentTarget = soundLocation.Value;
+            }
+            else
+            {
+                float radius = (distanceToSound / maxSoundRadius) * maxSoundRadius;
+                currentTarget = GetRandomPointAroundSound(radius);
+            }
+
+            currentPath = FindPath(currentNode, currentTarget.Value);
+            currentPathIndex = 0;
+        }
+    }
+
+    void UpdateMovement()
+    {
+        // Don't move or rotate if frozen
+        if (currentState == AgentState.Frozen)
+            return;
+
+        // Always face the player unless frozen
+        Vector3 directionToPlayer = (playerCamera.transform.position - transform.position);
+        directionToPlayer.y = 0; // Keep rotation only on horizontal plane
+        if (directionToPlayer != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer.normalized);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        // Handle movement based on state
+        switch (currentState)
+        {            
+            case AgentState.Chasing:
+                ChasePlayer();
+                break;
+            
+            case AgentState.Investigating:
+            case AgentState.Patrolling:
+                if (currentPath.Count > 0 && currentPathIndex < currentPath.Count)
+                {
+                    MoveAlongPath();
+                }
+                break;
+        }
+    }
+
+    bool IsBeingViewedByCamera()
+    {
+        if (!playerCamera) return false;
+
+        CapsuleCollider capsule = GetComponent<CapsuleCollider>();
+        Vector3 colliderCenter = transform.position + (capsule ? capsule.center : Vector3.zero);
+        
+        Vector3 directionToCamera = playerCamera.transform.position - colliderCenter;
+        Vector3 cameraToAgent = -directionToCamera;
+        float angle = Vector3.Angle(playerCamera.transform.forward, cameraToAgent);
+        bool inFOV = angle < viewAngleThreshold;
+
+        if (showDebugInfo)
+        {
+            Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * 50f, Color.blue);
+            Debug.DrawLine(playerCamera.transform.position, colliderCenter, inFOV ? Color.green : Color.red);
+        }
+
+        if (inFOV)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(playerCamera.transform.position, cameraToAgent.normalized, out hit))
+            {
+                bool canSeeAgent = hit.collider.gameObject == gameObject;
+                if (showDebugInfo && canSeeAgent)
+                {
+                    Debug.DrawLine(hit.point, hit.point + hit.normal, Color.red, 0.1f);
+                }
+                return canSeeAgent;
+            }
+        }
+        return false;
+    }
+
+    void MoveAlongPath()
+    {
+        Vector3 targetPosition = new Vector3(
+            currentPath[currentPathIndex].x * mazeGenerator.scaleFactor,
+            transform.position.y,
+            currentPath[currentPathIndex].y * mazeGenerator.scaleFactor
+        );
+
+        Vector3 moveDirection = (targetPosition - transform.position).normalized;
+        transform.position += moveDirection * speed * Time.deltaTime;
+
+        // Update position in grid when reaching target
+        if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+        {
+            currentNode = currentPath[currentPathIndex];
+            currentPathIndex++;
+        }
+
+        // Always face the player
+        Vector3 directionToPlayer = (playerCamera.transform.position - transform.position);
+        directionToPlayer.y = 0; // Keep rotation only on horizontal plane
+        if (directionToPlayer != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer.normalized);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
     }
 
     List<Vector2Int> FindPath(Vector2Int start, Vector2Int target)
@@ -61,6 +355,7 @@ public class AgentController : MonoBehaviour
         var openSet = new List<Node>();
         var closedSet = new HashSet<Vector2Int>();
         
+        // Reset node values
         for (int x = 0; x < mazeGenerator.width; x++)
         {
             for (int y = 0; y < mazeGenerator.height; y++)
@@ -167,40 +462,6 @@ public class AgentController : MonoBehaviour
         return path;
     }
 
-    bool IsBeingViewedByCamera()
-    {
-        if (playerCamera == null) return false;
-
-        Vector3 directionToCamera = playerCamera.transform.position - transform.position;
-        float distanceToCamera = directionToCamera.magnitude;
-        Vector3 cameraToAgent = transform.position - playerCamera.transform.position;
-        float angle = Vector3.Angle(playerCamera.transform.forward, cameraToAgent);
-        bool inFOV = angle < viewAngleThreshold;
-
-        if (showDebugInfo)
-        {
-            Debug.Log($"Angle to agent: {angle}, FOV Threshold: {viewAngleThreshold}, In FOV: {inFOV}");
-            Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * 10f, Color.blue);
-            Debug.DrawLine(playerCamera.transform.position, transform.position, inFOV ? Color.green : Color.red);
-        }
-
-        if (inFOV)
-        {
-            RaycastHit hit;
-            if (Physics.Raycast(playerCamera.transform.position, cameraToAgent, out hit, distanceToCamera))
-            {
-                bool canSeeAgent = hit.collider.gameObject == gameObject;
-                if (showDebugInfo)
-                {
-                    Debug.Log($"Hit object: {hit.collider.gameObject.name}, Can see agent: {canSeeAgent}");
-                }
-                return canSeeAgent;
-            }
-        }
-
-        return false;
-    }
-
     private Vector2Int GetRandomPointAroundSound(float radius)
     {
         List<Vector2Int> validPoints = new List<Vector2Int>();
@@ -227,173 +488,6 @@ public class AgentController : MonoBehaviour
         return validPoints.Count > 0 
             ? validPoints[Random.Range(0, validPoints.Count)] 
             : soundLocation.Value;
-    }
-
-    private Vector2Int? lastSoundLocation = null;
-    private Vector2Int? currentTarget = null;
-    
-    void Update()
-    {
-        if (!mazeGenerator) return;
-
-        isBeingViewed = IsBeingViewedByCamera();
-        if (isBeingViewed) return;
-
-        // Only update path if sound location has changed
-        if (soundLocation != lastSoundLocation)
-        {
-            lastSoundLocation = soundLocation;
-            
-            if (soundLocation.HasValue)
-            {
-                int distanceToSound = Mathf.Abs(currentNode.x - soundLocation.Value.x) + 
-                                    Mathf.Abs(currentNode.y - soundLocation.Value.y);
-                
-                if (distanceToSound <= 1)
-                {
-                    currentTarget = soundLocation.Value;
-                }
-                else
-                {
-                    float radius = (distanceToSound / maxSoundRadius) * maxSoundRadius;
-                    currentTarget = GetRandomPointAroundSound(radius);
-                }
-
-                currentPath = FindPath(currentNode, currentTarget.Value);
-                currentPathIndex = 0;
-            }
-        }
-
-        // Continue moving if we have a path
-        if (currentPath.Count > 0 && currentPathIndex < currentPath.Count)
-        {
-            MoveAlongPath();
-        }
-
-        senseTimer += Time.deltaTime;
-        if (senseTimer >= senseInterval)
-        {
-            SenseNearbyTiles();
-            senseTimer = 0f;
-        }
-    }
-
-    void MoveAlongPath()
-    {
-        Vector3 targetPosition = new Vector3(
-            currentPath[currentPathIndex].x * mazeGenerator.scaleFactor,
-            transform.position.y,
-            currentPath[currentPathIndex].y * mazeGenerator.scaleFactor
-        );
-
-        Vector3 moveDirection = (targetPosition - transform.position).normalized;
-        transform.position += moveDirection * speed * Time.deltaTime;
-
-        if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
-        {
-            currentNode = currentPath[currentPathIndex];
-            currentPathIndex++;
-        }
-
-        if (moveDirection != Vector3.zero)
-        {
-            transform.rotation = Quaternion.Lerp(
-                transform.rotation,
-                Quaternion.LookRotation(moveDirection),
-                10f * Time.deltaTime
-            );
-        }
-    }
-
-    void SenseNearbyTiles()
-    {
-        int currentX = Mathf.RoundToInt(transform.position.x / mazeGenerator.scaleFactor);
-        int currentY = Mathf.RoundToInt(transform.position.z / mazeGenerator.scaleFactor);
-
-        for (int xOffset = -2; xOffset <= 2; xOffset++)
-        {
-            for (int yOffset = -2; yOffset <= 2; yOffset++)
-            {
-                int checkX = currentX + xOffset;
-                int checkY = currentY + yOffset;
-
-                if (checkX < 0 || checkX >= mazeGenerator.width || 
-                    checkY < 0 || checkY >= mazeGenerator.height)
-                    continue;
-
-                float distance = Vector2.Distance(
-                    new Vector2(currentX, currentY),
-                    new Vector2(checkX, checkY)
-                );
-
-                if (distance <= senseRadius)
-                {
-                    CellState cellState = mazeGenerator.grid[checkX, checkY].CellState;
-                    if (cellState != null && !cellState.isRevealed)
-                    {
-                        cellState.Reveal();
-                        Vector2Int pos = new Vector2Int(checkX, checkY);
-                        knownRewards[pos] = cellState.hiddenReward;
-                    }
-                }
-            }
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        int currentX = Mathf.RoundToInt(transform.position.x / mazeGenerator.scaleFactor);
-        int currentY = Mathf.RoundToInt(transform.position.z / mazeGenerator.scaleFactor);
-        
-        if (currentX >= 0 && currentX < mazeGenerator.width &&
-            currentY >= 0 && currentY < mazeGenerator.height)
-        {
-            CellState cellState = mazeGenerator.grid[currentX, currentY].CellState;
-            if (cellState != null && cellState.isRevealed)
-            {
-                score += (int)cellState.hiddenReward;
-                Debug.Log($"NPC score changed by {cellState.hiddenReward}. New score: {score}");
-            }
-        }
-    }
-
-    void OnDrawGizmos()
-    {
-        if (playerCamera != null && showDebugInfo)
-        {
-            Vector3 forward = playerCamera.transform.forward;
-            Vector3 origin = playerCamera.transform.position;
-            float radius = 5f;
-
-            Vector3 rightEdge = Quaternion.Euler(0, viewAngleThreshold, 0) * forward;
-            Vector3 leftEdge = Quaternion.Euler(0, -viewAngleThreshold, 0) * forward;
-
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(origin, origin + rightEdge * radius);
-            Gizmos.DrawLine(origin, origin + leftEdge * radius);
-
-            if (currentPath != null && currentPath.Count > 0)
-            {
-                Gizmos.color = Color.blue;
-                for (int i = 0; i < currentPath.Count - 1; i++)
-                {
-                    Vector3 start = new Vector3(currentPath[i].x * mazeGenerator.scaleFactor, 1, currentPath[i].y * mazeGenerator.scaleFactor);
-                    Vector3 end = new Vector3(currentPath[i + 1].x * mazeGenerator.scaleFactor, 1, currentPath[i + 1].y * mazeGenerator.scaleFactor);
-                    Gizmos.DrawLine(start, end);
-                }
-            }
-
-            if (soundLocation.HasValue)
-            {
-                Gizmos.color = Color.red;
-                Vector3 soundPos = new Vector3(
-                    soundLocation.Value.x * mazeGenerator.scaleFactor,
-                    1,
-                    soundLocation.Value.y * mazeGenerator.scaleFactor
-                );
-                Gizmos.DrawWireSphere(soundPos, maxSoundRadius * mazeGenerator.scaleFactor);
-            }
-        }
     }
 
     public int GetScore() { return score; }

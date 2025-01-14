@@ -57,11 +57,84 @@ public class AgentController : MonoBehaviour
             return;
         }
 
-        currentNode = new Vector2Int(
-            Mathf.RoundToInt(transform.position.x / mazeGenerator.scaleFactor),
-            Mathf.RoundToInt(transform.position.z / mazeGenerator.scaleFactor)
+        // Find a random spawn point far from start (assuming start is at 0,0)
+        Vector2Int spawnPoint = FindFarSpawnPoint();
+        
+        // Set position to spawn point
+        transform.position = new Vector3(
+            spawnPoint.x * mazeGenerator.scaleFactor,
+            transform.position.y,
+            spawnPoint.y * mazeGenerator.scaleFactor
         );
+
+        currentNode = spawnPoint;
         previousState = AgentState.Patrolling;
+        
+        if (showDebugInfo) Debug.Log($"Agent spawned at: {spawnPoint}");
+    }
+
+    private Vector2Int FindFarSpawnPoint()
+    {
+        List<Vector2Int> validSpawnPoints = new List<Vector2Int>();
+        float minDistanceFromStart = Mathf.Min(mazeGenerator.width, mazeGenerator.height) * 0.75f; // At least 75% of maze size away
+
+        for (int x = 0; x < mazeGenerator.width; x++)
+        {
+            for (int y = 0; y < mazeGenerator.height; y++)
+            {
+                Vector2Int point = new Vector2Int(x, y);
+                float distanceFromStart = Vector2Int.Distance(point, Vector2Int.zero);
+
+                if (distanceFromStart >= minDistanceFromStart && 
+                    mazeGenerator.nodes[x, y].IsWalkable)
+                {
+                    validSpawnPoints.Add(point);
+                }
+            }
+        }
+
+        // If no points found meeting the distance criteria, fall back to any walkable point in the furthest third
+        if (validSpawnPoints.Count == 0)
+        {
+            float fallbackDistance = Mathf.Min(mazeGenerator.width, mazeGenerator.height) * 0.6f;
+            for (int x = 0; x < mazeGenerator.width; x++)
+            {
+                for (int y = 0; y < mazeGenerator.height; y++)
+                {
+                    Vector2Int point = new Vector2Int(x, y);
+                    float distanceFromStart = Vector2Int.Distance(point, Vector2Int.zero);
+
+                    if (distanceFromStart >= fallbackDistance && 
+                        mazeGenerator.nodes[x, y].IsWalkable)
+                    {
+                        validSpawnPoints.Add(point);
+                    }
+                }
+            }
+        }
+
+        // If still no valid points (very small maze?), just find any walkable point
+        if (validSpawnPoints.Count == 0)
+        {
+            for (int x = 0; x < mazeGenerator.width; x++)
+            {
+                for (int y = 0; y < mazeGenerator.height; y++)
+                {
+                    if (mazeGenerator.nodes[x, y].IsWalkable)
+                    {
+                        validSpawnPoints.Add(new Vector2Int(x, y));
+                    }
+                }
+            }
+        }
+
+        if (validSpawnPoints.Count == 0)
+        {
+            Debug.LogError("No valid spawn points found!");
+            return Vector2Int.zero;
+        }
+
+        return validSpawnPoints[Random.Range(0, validSpawnPoints.Count)];
     }
 
     void Update()

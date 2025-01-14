@@ -1,61 +1,65 @@
-// ItemManager.cs
 using UnityEngine;
-
+using UnityEngine.UI;
 public class ItemManager : MonoBehaviour
 {
-    public static ItemManager Instance { get; private set; }
-    public GameObject[] keyObjects; // Assign all key objects in the scene
-    public LayerMask wallLayer;    // Assign the layer containing walls
-
-    void Awake()
+    // Current held item
+    private Item currentItem;
+    
+    // UI image to show current item
+    public Image itemUIImage;
+    
+    // Distance to pick up items
+    public float pickupDistance = 2f;
+    
+    void Update()
     {
-        if (Instance == null)
+        // Pick up item
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    public Transform GetNearestKey(Vector3 position)
-    {
-        Transform nearest = null;
-        float nearestDistance = float.MaxValue;
-
-        foreach (GameObject key in keyObjects)
-        {
-            float distance = Vector3.Distance(position, key.transform.position);
-            if (distance < nearestDistance)
+            // Only if not holding an item
+            if (currentItem == null)
             {
-                nearestDistance = distance;
-                nearest = key.transform;
-            }
-        }
-
-        return nearest;
-    }
-
-    public Vector3 GetRandomPositionNearKey(float radius)
-    {
-        if (keyObjects.Length == 0) return Vector3.zero;
-        
-        GameObject randomKey = keyObjects[Random.Range(0, keyObjects.Length)];
-        
-        // Try to find valid position
-        for (int i = 0; i < 30; i++)
-        {
-            Vector2 randomCircle = Random.insideUnitCircle * radius;
-            Vector3 randomPosition = randomKey.transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
-            
-            if (!Physics.CheckSphere(randomPosition, 0.5f, wallLayer))
-            {
-                return randomPosition;
+                // Find nearest item
+                Item[] items = FindObjectsOfType<Item>();
+                Item nearest = null;
+                float nearestDist = float.MaxValue;
+                
+                foreach (Item item in items)
+                {
+                    float dist = Vector3.Distance(transform.position, item.transform.position);
+                    if (dist < pickupDistance && dist < nearestDist)
+                    {
+                        nearest = item;
+                        nearestDist = dist;
+                    }
+                }
+                
+                // Pick up nearest item
+                if (nearest != null)
+                {
+                    currentItem = nearest;
+                    nearest.gameObject.SetActive(false);
+                    itemUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
+                    itemUIImage.enabled = true;
+                }
             }
         }
         
-        // If no valid position found, return key position
-        return randomKey.transform.position;
+        // Drop item
+        if (Input.GetKeyDown(KeyCode.Q) && currentItem != null)
+        {
+            currentItem.gameObject.SetActive(true);
+            currentItem.transform.position = transform.position;
+            currentItem = null;
+            itemUIImage.enabled = false;
+        }
+        
+        // Use item
+        if (Input.GetKeyDown(KeyCode.F) && currentItem != null)
+        {
+            currentItem.Use();
+            currentItem = null;
+            itemUIImage.enabled = false;
+        }
     }
 }

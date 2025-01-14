@@ -1,19 +1,23 @@
 using UnityEngine;
-
-public class DynamiteItem : Item
+public class Dynamite : Item
 {
-    public float explosionRadius = 5f;
+    // Explosion radius
+    public float radius = 5f;
     
-    public override void Use(PlayerController player)
+    public override void Use()
     {
-        Collider[] colliders = Physics.OverlapSphere(player.transform.position, explosionRadius);
+        // Find all walls in radius
+        Collider[] colliders = Physics.OverlapSphere(playerTransform.position, radius);
         
         foreach (Collider col in colliders)
         {
+            // Destroy walls in radius
             if (col.CompareTag("Wall"))
             {
                 Destroy(col.gameObject);
             }
         }
+        
+        OnUse();
     }
 }

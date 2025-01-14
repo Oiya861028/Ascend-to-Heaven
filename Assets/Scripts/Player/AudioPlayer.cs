@@ -20,14 +20,14 @@ public class AudioPlayer : MonoBehaviour
             if (!BreathingAudioSource.isPlaying)
             {
                 BreathingAudioSource.Play();
-                // NotifyAgentOfSound();
+                NotifyAgentOfSound();
             }
             BreathingAudioSource.volume = Mathf.Lerp(BreathingAudioSource.volume, .75f, audioFadeSpeed * Time.deltaTime);
 
             if (!footStepAudioSource.isPlaying)
             {
                 footStepAudioSource.Play();
-                // NotifyAgentOfSound();
+                NotifyAgentOfSound();
             }
             footStepAudioSource.volume = Mathf.Lerp(footStepAudioSource.volume, 1f, audioFadeSpeed * Time.deltaTime);
         }
@@ -64,7 +64,7 @@ public class AudioPlayer : MonoBehaviour
                     Mathf.RoundToInt(transform.position.x / 2),
                     Mathf.RoundToInt(transform.position.z / 2)
                 );
-                // agent.soundLocation = soundPos;
+                agent.soundLocation = soundPos;
                 Debug.Log($"Sound created at grid position: {soundPos}");
                 Debug.DrawLine(transform.position, transform.position + Vector3.up * 5f, Color.red, 1f);
             }

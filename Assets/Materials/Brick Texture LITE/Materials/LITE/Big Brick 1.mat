@@ -139,7 +139,11 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+<<<<<<< HEAD:Assets/Brick Texture LITE/Materials/LITE/Big Brick 1.mat
+--- !u!114 &7463089460315408222
+=======
 --- !u!114 &5996884083883174463
+>>>>>>> ec4300f9a9d4a0dfcd272e0ec95268a433c88d04:Assets/Materials/Brick Texture LITE/Materials/LITE/Big Brick 1.mat
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

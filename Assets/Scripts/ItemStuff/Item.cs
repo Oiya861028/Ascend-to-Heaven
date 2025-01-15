@@ -2,16 +2,36 @@ using UnityEngine;
 using UnityEngine.UI;
 public abstract class Item : MonoBehaviour
 {
-    // Reference to the UI image that shows the item
-    protected Image itemUIImage;
-    
-    // Reference to the player transform
     protected Transform playerTransform;
     
-    // Virtual method that will be overridden by specific items
+    protected virtual void Awake()
+    {
+        InitializePlayerTransform();
+    }
+
+    protected virtual void Start()
+    {
+        if (playerTransform == null)
+        {
+            InitializePlayerTransform();
+        }
+    }
+
+    private void InitializePlayerTransform()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            playerTransform = player.transform;
+        }
+        else
+        {
+            Debug.LogError("Player not found! Make sure Player has 'Player' tag");
+        }
+    }
+    
     public abstract void Use();
     
-    // Virtual method for cleanup after use
     public virtual void OnUse()
     {
         Destroy(gameObject);

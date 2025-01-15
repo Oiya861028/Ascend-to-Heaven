@@ -7,6 +7,7 @@ public class ItemManager : MonoBehaviour
     
     // UI image to show current item
     public Image itemUIImage;
+    public Image keyUIImage;
     
     // Distance to pick up items
     public float pickupDistance = 2f;

@@ -9,10 +9,15 @@ public class ItemController : MonoBehaviour
     public GameObject portal;
     public GameObject spoon;
     public GameObject dynamite;
+    public GameObject chest;
+    public GameObject map;
+    public GameObject pearl;
+    
 
     [Header("Respawn Settings")]
     public float KeyRespawnTime = 5f; // Time in seconds before keys respawn
     public float spawnDistance = 5f; // Distance between items
+    public float spawnHeight = 2f; // Height of the items
 
     private List<Vector2> cornerCellsPosition;
     private List<Vector2> walkableCellsPosition;
@@ -61,6 +66,9 @@ public class ItemController : MonoBehaviour
         PlaceItem(portal);
         PlaceItem(spoon);
         PlaceItem(dynamite);
+        PlaceItem(chest);
+        PlaceItem(map);
+        PlaceItem(pearl);
     }
 
     private void PlaceItem(GameObject item)
@@ -68,7 +76,7 @@ public class ItemController : MonoBehaviour
         Vector2 randomPosition = GetUniqueRandomCellPosition(false);
         usedPositions.Add(randomPosition);
 
-        Vector3 position = new Vector3(randomPosition.x, 1, randomPosition.y); // Adjust position as needed
+        Vector3 position = new Vector3(randomPosition.x, spawnHeight, randomPosition.y); // Adjust position as needed
         Instantiate(item, position, Quaternion.identity);
     }
 

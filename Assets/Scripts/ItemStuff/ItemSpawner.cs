@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class ItemController : MonoBehaviour
+public class ItemSpawner : MonoBehaviour
 {
+    public Text keyCountText;
     [Header("Item prefabs")]
     public GameObject keyPrefab; // Assign your key GameObject in the inspector
     public GameObject chestPrefab;
@@ -94,6 +97,7 @@ public class ItemController : MonoBehaviour
             Vector3 position = new Vector3(RandomCellPosition.x, 1, RandomCellPosition.y); // Adjust position as needed
             keys[i] = Instantiate(keyPrefab, position, Quaternion.identity);
             keys[i].tag = "Key";
+            keys[i].GetComponent<KeyItem>().keyCountText = keyCountText;
         }
     }
     

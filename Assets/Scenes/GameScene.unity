@@ -494,6 +494,10 @@ PrefabInstance:
       propertyPath: pearl
       value: 
       objectReference: {fileID: 9173711368208568939, guid: 62ed8834923394948b84703b2f4815c3, type: 3}
+    - target: {fileID: 1701979113775467104, guid: e8c50b3a5723d5e43a753cad6cbd1fa7, type: 3}
+      propertyPath: chestPrefab
+      value: 
+      objectReference: {fileID: 4636429433372013747, guid: 4c18ac9e74741d84191ebf61330f8050, type: 3}
     - target: {fileID: 2235130230376997676, guid: e8c50b3a5723d5e43a753cad6cbd1fa7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

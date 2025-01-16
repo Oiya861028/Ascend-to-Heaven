@@ -7,7 +7,7 @@ public class SceneController : MonoBehaviour
     // This function is called when the "Start Game" button is clicked on the StartScene
     public void LoadInstructionScene()
     {
-        SceneManager.LoadScene("InstructionScene1");
+        SceneManager.LoadScene("InstructionScene");
     }
 
     // This function is called when the "Play Again" button is clicked on the LosingScene or WinningScene

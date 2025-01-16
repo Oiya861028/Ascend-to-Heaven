@@ -40,8 +40,24 @@ public class ItemManager : MonoBehaviour
                 {
                     currentItem = nearest;
                     nearest.gameObject.SetActive(false);
-                    itemUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
-                    itemUIImage.enabled = true;
+                    //Check if item is key, if yes then use immediately and update UI
+                    if(currentItem is KeyItem)
+                    {
+                        //If it's the first key, we want to draw the icon
+                        if(keyUIImage.sprite == null)
+                        {
+                            keyUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
+                            keyUIImage.enabled = true;
+                        }
+                        currentItem.Use();
+                        currentItem = null;
+                    }
+                    else
+                    {
+                        itemUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
+                        itemUIImage.enabled = true;
+                    }
+                    
                 }
             }
         }

@@ -31,7 +31,7 @@ public class Portal : Item
             int randomIndex = Random.Range(0, validPositions.Count);
             playerTransform.position = validPositions[randomIndex];
         }
-        
         OnUse();
+        Destroy(gameObject);
     }
 }

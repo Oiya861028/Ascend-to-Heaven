@@ -16,7 +16,7 @@ public class Spoon : Item
                 Destroy(hit.collider.gameObject);
             }
         }
-        
         OnUse();
+        Destroy(gameObject);
     }
 }

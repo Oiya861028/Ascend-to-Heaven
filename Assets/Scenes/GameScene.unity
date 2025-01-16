@@ -885,6 +885,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemUIImage: {fileID: 251699687}
+  keyUIImage: {fileID: 0}
   pickupDistance: 5
 --- !u!114 &940071696
 MonoBehaviour:

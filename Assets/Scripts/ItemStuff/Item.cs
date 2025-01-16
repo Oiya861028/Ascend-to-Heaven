@@ -44,7 +44,5 @@ public abstract class Item : MonoBehaviour
         {
             Debug.LogError("AudioPlayer component not found on Player!");
         }
-        
-        Destroy(gameObject);
     }
 }

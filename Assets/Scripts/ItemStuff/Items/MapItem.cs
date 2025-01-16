@@ -37,9 +37,9 @@ public class Map : Item
         RectTransform rect = imageObj.GetComponent<RectTransform>();
         rect.anchorMin = rect.anchorMax = mapPosition;
         rect.sizeDelta = mapSize;
-        
-        // Destroy after duration
+        OnUse();
         StartCoroutine(DestroyMapAfterDelay());
+        Destroy(gameObject);
     }
     
     private IEnumerator DestroyMapAfterDelay()
@@ -48,6 +48,5 @@ public class Map : Item
         Destroy(minimapCamera.gameObject);
         Destroy(minimapImage.gameObject);
         renderTexture.Release();
-        OnUse();
     }
 }

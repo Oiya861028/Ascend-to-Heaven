@@ -1,11 +1,12 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class AudioPlayer : MonoBehaviour
 {
     public AudioSource BreathingAudioSource;
     public AudioSource footStepAudioSource;
     public float audioFadeSpeed = 5f;
-    public AgentController agent;
+    public List<AgentController> agents = new List<AgentController>();
     private Vector3 lastPosition;
 
     void Start()
@@ -23,7 +24,7 @@ public class AudioPlayer : MonoBehaviour
                 NotifyAgentOfSound();
             }
             BreathingAudioSource.volume = Mathf.Lerp(BreathingAudioSource.volume, .75f, audioFadeSpeed * Time.deltaTime);
-
+            
             if (!footStepAudioSource.isPlaying)
             {
                 footStepAudioSource.Play();
@@ -41,7 +42,6 @@ public class AudioPlayer : MonoBehaviour
                     BreathingAudioSource.Stop();
                 }
             }
-
             if (footStepAudioSource.isPlaying)
             {
                 footStepAudioSource.volume = Mathf.Lerp(footStepAudioSource.volume, 0f, audioFadeSpeed * Time.deltaTime);
@@ -55,23 +55,34 @@ public class AudioPlayer : MonoBehaviour
 
     public void NotifyAgentOfSound()
     {
-        if (agent != null)
+        if (agents.Count == 0)
         {
-            MazeGenerator maze = FindObjectOfType<MazeGenerator>();
-            if (maze != null)
-            {
-                Vector2Int soundPos = new Vector2Int(
-                    Mathf.RoundToInt(transform.position.x / 2),
-                    Mathf.RoundToInt(transform.position.z / 2)
-                );
-                agent.soundLocation = soundPos;
-                Debug.Log($"Sound created at grid position: {soundPos}");
-                Debug.DrawLine(transform.position, transform.position + Vector3.up * 5f, Color.red, 1f);
-            }
+            Debug.LogWarning("No agents referenced in AudioPlayer!");
+            return;
         }
-        else
+
+        MazeGenerator maze = FindObjectOfType<MazeGenerator>();
+        if (maze != null)
         {
-            Debug.LogWarning("Agent reference is missing in AudioPlayer!");
+            Vector2Int soundPos = new Vector2Int(
+                Mathf.RoundToInt(transform.position.x / 2),
+                Mathf.RoundToInt(transform.position.z / 2)
+            );
+
+            foreach (AgentController agent in agents)
+            {
+                if (agent != null)
+                {
+                    agent.soundLocation = soundPos;
+                }
+                else
+                {
+                    Debug.LogWarning("Null agent reference found in AudioPlayer's agent list!");
+                }
+            }
+
+            Debug.Log($"Sound created at grid position: {soundPos}");
+            Debug.DrawLine(transform.position, transform.position + Vector3.up * 5f, Color.red, 1f);
         }
     }
 }

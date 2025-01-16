@@ -6,10 +6,10 @@ public class ItemController : MonoBehaviour
 {
     [Header("Item prefabs")]
     public GameObject keyPrefab; // Assign your key GameObject in the inspector
+    public GameObject chestPrefab;
     public GameObject portal;
     public GameObject spoon;
     public GameObject dynamite;
-    public GameObject chest;
     public GameObject map;
     public GameObject pearl;
     
@@ -63,10 +63,10 @@ public class ItemController : MonoBehaviour
 
     private void PlaceItems()
     {
+        PlaceItem(chestPrefab);
         PlaceItem(portal);
         PlaceItem(spoon);
         PlaceItem(dynamite);
-        PlaceItem(chest);
         PlaceItem(map);
         PlaceItem(pearl);
     }

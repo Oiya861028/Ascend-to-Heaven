@@ -49,7 +49,7 @@ public class AgentController : MonoBehaviour
 
     void Initialize()
     {
-        mazeGenerator = FindObjectOfType<MazeGenerator>();
+        mazeGenerator = FindFirstObjectByType<MazeGenerator>();
         if (!mazeGenerator || !playerCamera)
         {
             Debug.LogError("Missing required references: MazeGenerator or PlayerCamera!");

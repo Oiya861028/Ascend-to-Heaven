@@ -53,7 +53,7 @@ public class AudioPlayer : MonoBehaviour
         }
     }
 
-    void NotifyAgentOfSound()
+    public void NotifyAgentOfSound()
     {
         if (agent != null)
         {

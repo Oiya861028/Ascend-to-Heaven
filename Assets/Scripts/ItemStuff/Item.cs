@@ -34,6 +34,17 @@ public abstract class Item : MonoBehaviour
     
     public virtual void OnUse()
     {
+        // Find the AudioPlayer component on the Player object
+        AudioPlayer audioPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<AudioPlayer>();
+        if (audioPlayer != null)
+        {
+            audioPlayer.NotifyAgentOfSound();
+        }
+        else
+        {
+            Debug.LogError("AudioPlayer component not found on Player!");
+        }
+        
         Destroy(gameObject);
     }
 }

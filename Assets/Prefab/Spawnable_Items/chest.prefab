@@ -215,8 +215,9 @@ GameObject:
   - component: {fileID: 5353825404968525446}
   - component: {fileID: 6657835136115965092}
   - component: {fileID: -4193307409012645747}
+  - component: {fileID: -3219065682557650313}
   m_Layer: 0
-  m_Name: chest
+  m_Name: Chest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -316,6 +317,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-3219065682557650313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4636429433372013747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3379ec7d53f3f4daaafbfe426063ee74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPrefabs:
+  - {fileID: 9176427228303195048, guid: f1c82da72ed6cb44d9aa7ac3f2e22aa6, type: 3}
+  - {fileID: 9173711368208568939, guid: 62ed8834923394948b84703b2f4815c3, type: 3}
+  - {fileID: 1882360880522581050, guid: 211ccfd13f01e8246a845442a92dc03c, type: 3}
+  - {fileID: 8117820405749213808, guid: d2da0b159b4d8b94e8198929c56087f1, type: 3}
+  - {fileID: 2342920449745245326, guid: 596f1f42b28b5cd478607fe3c01fc79a, type: 3}
+  - {fileID: 4845482352802513461, guid: a7837cfdd29acf047a873320040d9fd3, type: 3}
+  interactDistance: 2
 --- !u!1 &7553857975782852635
 GameObject:
   m_ObjectHideFlags: 0

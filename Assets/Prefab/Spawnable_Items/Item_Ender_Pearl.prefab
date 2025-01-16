@@ -205,8 +205,9 @@ GameObject:
   - component: {fileID: 9036792467108148580}
   - component: {fileID: -159232769755776845}
   - component: {fileID: 6554191557555626989}
+  - component: {fileID: -8806166257865383268}
   m_Layer: 0
-  m_Name: Item_Pearl
+  m_Name: Item_Ender_Pearl
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -305,3 +306,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-8806166257865383268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9173711368208568939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea7a0c176ade44a28687a99ec2f1f88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  riseHeight: 5

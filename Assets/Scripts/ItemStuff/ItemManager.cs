@@ -4,6 +4,7 @@ public class ItemManager : MonoBehaviour
 {
     // Current held item
     private Item currentItem;
+
     
     // UI image to show current item
     public Image itemUIImage;

@@ -788,12 +788,30 @@ PrefabInstance:
       propertyPath: agent
       value: 
       objectReference: {fileID: 548344084}
+    - target: {fileID: 7520770576943977913, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: agents.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7520770576943977913, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: 'agents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 548344084}
+    - target: {fileID: 7520770576943977913, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: 'agents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 94821894}
+    - target: {fileID: 7520770576943977913, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: 'agents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1442807154}
     - target: {fileID: 8914842128186539098, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7173931133357631567, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+    - {fileID: 916702585490541749, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+    - {fileID: 7520770576943977913, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

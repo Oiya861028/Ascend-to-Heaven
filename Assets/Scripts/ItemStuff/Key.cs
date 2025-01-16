@@ -3,8 +3,7 @@ using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class KeyItem : Item
+public class Key : MonoBehaviour
 {
     protected Transform playerTransform;
     public Text keyCountText;
@@ -36,7 +35,7 @@ public class KeyItem : Item
             Debug.LogError("Player not found! Make sure Player has 'Player' tag");
         }
     }
-    public override void Use()
+    public void Use()
     {
         keysCollected++;
         UpdateKeyUICount();

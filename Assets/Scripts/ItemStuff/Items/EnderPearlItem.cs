@@ -8,6 +8,8 @@ public class EnderPearl : Item
     
     private bool isMoving = false;
     private Vector3 targetPosition;
+    private float originalZ;
+    private bool hasRisen = false;
     
     public override void Use()
     {
@@ -30,16 +32,27 @@ public class EnderPearl : Item
         
         if (nearestKey != null)
         {
-            // Set target position at same height as key
+            originalZ = transform.position.z;
             targetPosition = new Vector3(
                 nearestKey.transform.position.x,
                 nearestKey.transform.position.y,
-                nearestKey.transform.position.z);
+                originalZ);
             
-            // Start moving
             isMoving = true;
-            // First rise up
-            transform.position += Vector3.up * riseHeight;
+            hasRisen = false;
+            gameObject.SetActive(true);  // Make sure it's visible for the movement
+            
+            // Call base OnUse but without destroying the object
+            AudioPlayer audioPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<AudioPlayer>();
+            if (audioPlayer != null)
+            {
+                audioPlayer.NotifyAgentOfSound();
+            }
+            base.hasBeenUsed = true;  // Mark as used but don't destroy
+        }
+        else
+        {
+            OnUse(); // If no key found, destroy normally
         }
     }
     
@@ -47,16 +60,31 @@ public class EnderPearl : Item
     {
         if (isMoving)
         {
-            // Move toward target
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                targetPosition,
-                moveSpeed * Time.deltaTime);
-                
-            // Check if reached target
-            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+            if (!hasRisen)
             {
-                OnUse();
+                // First rise up
+                float newZ = Mathf.MoveTowards(transform.position.z, originalZ + riseHeight, moveSpeed * Time.deltaTime);
+                transform.position = new Vector3(transform.position.x, transform.position.y, newZ);
+                
+                if (Mathf.Approximately(transform.position.z, originalZ + riseHeight))
+                {
+                    hasRisen = true;
+                }
+            }
+            else
+            {
+                // Then move toward target
+                Vector3 currentPos = transform.position;
+                Vector3 moveTarget = new Vector3(targetPosition.x, targetPosition.y, transform.position.z);
+                
+                transform.position = Vector3.MoveTowards(currentPos, moveTarget, moveSpeed * Time.deltaTime);
+                
+                // Check if reached target X and Y
+                if (Mathf.Approximately(transform.position.x, targetPosition.x) && 
+                    Mathf.Approximately(transform.position.y, targetPosition.y))
+                {
+                    Destroy(gameObject); // Only destroy when reaching the target
+                }
             }
         }
     }

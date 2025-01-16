@@ -2,24 +2,29 @@ using UnityEngine;
 using UnityEngine.UI;
 public class ItemManager : MonoBehaviour
 {
-    // Current held item
     private Item currentItem;
-
-    
-    // UI image to show current item
     public Image itemUIImage;
-    public Image keyUIImage;
-    
-    // Distance to pick up items
     public float pickupDistance = 2f;
+    private Transform playerTransform;
+    
+    void Start()
+    {
+        playerTransform = transform;
+        
+        if (itemUIImage == null)
+        {
+            Debug.LogError("Item UI Image not assigned in Inspector!");
+        }
+    }
     
     void Update()
     {
+        if (itemUIImage == null) return;  // Safety check
+        
         // Pick up item
         if (Input.GetKeyDown(KeyCode.E))
         {
-            // Only if not holding an item
-            if (currentItem == null)
+            if (currentItem == null || currentItem.HasBeenUsed())  // Changed condition
             {
                 // Find nearest item
                 Item[] items = FindObjectsOfType<Item>();
@@ -28,7 +33,9 @@ public class ItemManager : MonoBehaviour
                 
                 foreach (Item item in items)
                 {
-                    float dist = Vector3.Distance(transform.position, item.transform.position);
+                    if (item == null) continue;  // Safety check
+                    
+                    float dist = Vector3.Distance(playerTransform.position, item.transform.position);
                     if (dist < pickupDistance && dist < nearestDist)
                     {
                         nearest = item;
@@ -40,44 +47,37 @@ public class ItemManager : MonoBehaviour
                 if (nearest != null)
                 {
                     currentItem = nearest;
-                    nearest.gameObject.SetActive(false);
-                    //Check if item is key, if yes then use immediately and update UI
-                    if(currentItem is KeyItem)
+                    SpriteRenderer spriteRenderer = nearest.GetComponent<SpriteRenderer>();
+                    if (spriteRenderer != null && spriteRenderer.sprite != null)
                     {
-                        //If it's the first key, we want to draw the icon
-                        if(keyUIImage.sprite == null)
-                        {
-                            keyUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
-                            keyUIImage.enabled = true;
-                        }
-                        currentItem.Use();
-                        currentItem = null;
-                    }
-                    else
-                    {
-                        itemUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
+                        itemUIImage.sprite = spriteRenderer.sprite;
                         itemUIImage.enabled = true;
                     }
-                    
+                    nearest.gameObject.SetActive(false);
                 }
             }
         }
         
-        // Drop item
-        if (Input.GetKeyDown(KeyCode.Q) && currentItem != null)
+        // Drop item - only if not used
+        if (Input.GetKeyDown(KeyCode.Q) && currentItem != null && !currentItem.HasBeenUsed())
         {
             currentItem.gameObject.SetActive(true);
-            currentItem.transform.position = transform.position;
+            currentItem.transform.position = playerTransform.position;
             currentItem = null;
             itemUIImage.enabled = false;
         }
         
-        // Use item
-        if (Input.GetKeyDown(KeyCode.F) && currentItem != null)
+        // Use item - only if not used
+        if (Input.GetKeyDown(KeyCode.F) && currentItem != null && !currentItem.HasBeenUsed())
         {
             currentItem.Use();
-            currentItem = null;
             itemUIImage.enabled = false;
+            
+            // Only clear current item if it's not an ender pearl
+            if (currentItem != null && currentItem.GetType() != typeof(EnderPearl))
+            {
+                currentItem = null;
+            }
         }
     }
 }

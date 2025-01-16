@@ -17,7 +17,7 @@ public class Dynamite : Item
                 Destroy(col.gameObject);
             }
         }
+
         OnUse();
-        Destroy(gameObject);
     }
 }

@@ -300,7 +300,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7117318152291772462}
-  - component: {fileID: 7173931133357631567}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -327,21 +326,6 @@ Transform:
   - {fileID: 2375606104000539307}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7173931133357631567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8914842128186539098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c12ed984cc481c041b7707a2b8c4ebfa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BreathingAudioSource: {fileID: 4534891858232357191}
-  footStepAudioSource: {fileID: 4067181932124591539}
-  audioFadeSpeed: 5
 --- !u!1001 &5416745019239976291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -549,8 +533,50 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 916702585490541749}
+    - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7520770576943977913}
   m_SourcePrefab: {fileID: 100100000, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+--- !u!1 &534867529456359794 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+  m_PrefabInstance: {fileID: 8140437812265434918}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &916702585490541749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534867529456359794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c86f3b0669a14b02a61e2e46bf09c4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemUIImage: {fileID: 0}
+  keyUIImage: {fileID: 0}
+  pickupDistance: 5
+--- !u!114 &7520770576943977913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534867529456359794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c12ed984cc481c041b7707a2b8c4ebfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BreathingAudioSource: {fileID: 4534891858232357191}
+  footStepAudioSource: {fileID: 4067181932124591539}
+  audioFadeSpeed: 5
+  agent: {fileID: 0}
 --- !u!4 &875927603600638920 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}

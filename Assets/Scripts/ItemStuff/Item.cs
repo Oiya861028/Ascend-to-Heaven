@@ -1,8 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
+// Base Item class
 public abstract class Item : MonoBehaviour
 {
     protected Transform playerTransform;
+    protected bool hasBeenUsed = false;  // New flag to track usage
     
     protected virtual void Awake()
     {
@@ -32,6 +33,12 @@ public abstract class Item : MonoBehaviour
     
     public abstract void Use();
     
+    // New method to check if item has been used
+    public bool HasBeenUsed()
+    {
+        return hasBeenUsed;
+    }
+    
     public virtual void OnUse()
     {
         // Find the AudioPlayer component on the Player object
@@ -44,5 +51,8 @@ public abstract class Item : MonoBehaviour
         {
             Debug.LogError("AudioPlayer component not found on Player!");
         }
+        
+        hasBeenUsed = true;
+        Destroy(gameObject);
     }
 }

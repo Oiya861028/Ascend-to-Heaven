@@ -97,7 +97,7 @@ public class ItemSpawner : MonoBehaviour
             Vector3 position = new Vector3(RandomCellPosition.x, 1, RandomCellPosition.y); // Adjust position as needed
             keys[i] = Instantiate(keyPrefab, position, Quaternion.identity);
             keys[i].tag = "Key";
-            keys[i].GetComponent<KeyItem>().keyCountText = keyCountText;
+            keys[i].GetComponent<Key>().keyCountText = keyCountText;
         }
     }
     

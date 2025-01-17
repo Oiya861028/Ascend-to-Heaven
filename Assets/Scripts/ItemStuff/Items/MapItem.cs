@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 public class Map : Item
 {
     // Duration map stays visible
@@ -37,15 +36,11 @@ public class Map : Item
         RectTransform rect = imageObj.GetComponent<RectTransform>();
         rect.anchorMin = rect.anchorMax = mapPosition;
         rect.sizeDelta = mapSize;
-        StartCoroutine(DestroyMapAfterDelay());
+        
+        // Add timer to handle destruction
+        MapTimer timer = imageObj.AddComponent<MapTimer>();
+        timer.Initialize(displayDuration, minimapCamera.gameObject);
+
         OnUse();
-    }
-    
-    private IEnumerator DestroyMapAfterDelay()
-    {
-        yield return new WaitForSeconds(displayDuration);
-        Destroy(minimapCamera.gameObject);
-        Destroy(minimapImage.gameObject);
-        renderTexture.Release();
     }
 }

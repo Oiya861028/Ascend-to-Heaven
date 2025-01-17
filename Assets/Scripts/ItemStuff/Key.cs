@@ -15,14 +15,6 @@ public class Key : MonoBehaviour
     protected virtual void Awake()
     {
         InitializePlayerTransform();
-        if (KeyImage == null)
-        {
-            KeyImage = GameObject.Find("KeyImage").GetComponent<Image>();
-        }
-        if (KeyText == null)
-        {
-            KeyText = GameObject.Find("KeyText").GetComponent<TextMeshProUGUI>();
-        }
     }
 
     protected virtual void Start()
@@ -47,6 +39,14 @@ public class Key : MonoBehaviour
     }
     void Update()
     {
+        if (KeyImage == null)
+        {
+            KeyImage = GameObject.Find("KeyImage").GetComponent<Image>();
+        }
+        if (KeyText == null)
+        {
+            KeyText = GameObject.Find("KeyText").GetComponent<TextMeshProUGUI>();
+        }
         // Check if player is close enough and presses E
         if (Vector3.Distance(transform.position, playerTransform.position) <= interactDistance && 
             Input.GetKeyDown(KeyCode.E))
@@ -60,7 +60,7 @@ public class Key : MonoBehaviour
         }
         KeyText.text = "X"+keysCollected.ToString();
         if(keysCollected == 3){
-            KeyText.text = KeyText.text +" All keys collected!";
+            KeyText.text = KeyText.text +" Find Exit";
         }
         Debug.Log("Key collected");
         Destroy(gameObject);

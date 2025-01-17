@@ -15,7 +15,11 @@ public class SceneController : MonoBehaviour
     // This function is called when the "Play Again" button is clicked on the LosingScene or WinningScene
     public void LoadStartScene()
     {
-        SceneManager.LoadScene("StartScene");
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        KeyItem.keysCollected = 0;
+        SceneManager.LoadSceneAsync("GameScene");
+        print("The button is working");
     }
 }
 

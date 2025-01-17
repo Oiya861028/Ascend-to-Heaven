@@ -11,7 +11,7 @@ public class DeathCheck : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(transform.position.y < -10)
+        if(transform.position.y < -100)
         {
             Debug.Log("Player has fallen off the map!");
             Cursor.lockState = CursorLockMode.None;

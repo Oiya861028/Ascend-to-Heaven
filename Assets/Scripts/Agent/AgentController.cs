@@ -58,7 +58,7 @@ public class AgentController : MonoBehaviour
             return;
         }
 
-        // Find a random spawn point far from start (assuming start is at 0,0)
+        // Find a random spawn point far from start 
         Vector2Int spawnPoint = FindFarSpawnPoint();
         
         // Set position to spawn point
@@ -94,7 +94,7 @@ public class AgentController : MonoBehaviour
             }
         }
 
-        // If no points found meeting the distance criteria, fall back to any walkable point in the furthest third
+        //if no points found meeting the distance criteria, fall back to any walkable point in the furthest third
         if (validSpawnPoints.Count == 0)
         {
             float fallbackDistance = Mathf.Min(mazeGenerator.width, mazeGenerator.height) * 0.6f;
@@ -114,7 +114,7 @@ public class AgentController : MonoBehaviour
             }
         }
 
-        // If still no valid points (very small maze?), just find any walkable point
+        //if still no valid points, just find any walkable point
         if (validSpawnPoints.Count == 0)
         {
             for (int x = 0; x < mazeGenerator.width; x++)
@@ -146,7 +146,7 @@ public class AgentController : MonoBehaviour
         UpdateMovement();
         checkIfCaughtPlayer();
     }
-    //Check if Agent has caught the player
+    //Check if agent has caught the player
     private void checkIfCaughtPlayer()
     {
         if (Vector3.Distance(transform.position, playerCamera.transform.position) < 1.5f)
@@ -172,7 +172,7 @@ public class AgentController : MonoBehaviour
         {
             if (currentState != AgentState.Frozen)
             {
-                previousState = currentState; // Store the state we're transitioning from
+                previousState = currentState; 
             }
             currentState = AgentState.Frozen;
             if (showDebugInfo) Debug.Log("State: FROZEN - Being viewed by player");
@@ -180,12 +180,12 @@ public class AgentController : MonoBehaviour
         }
         else if (wasBeingViewed && !isBeingViewed)
         {
-            // We just stopped being viewed - resume previous state
+            
             currentState = previousState;
             if (showDebugInfo) Debug.Log($"State: RESUMING {previousState} - No longer being viewed");
         }
 
-        // Only update state if we're not frozen
+        //only update state if not frozen
         if (currentState != AgentState.Frozen)
         {
             if (CanSeePlayer())
@@ -203,7 +203,6 @@ public class AgentController : MonoBehaviour
             else if (currentPath.Count == 0 || currentPathIndex >= currentPath.Count)
             {
                 currentState = AgentState.Patrolling;
-                // TODO: Add patrol point selection logic
                 if (showDebugInfo) Debug.Log("State: PATROLLING - Following patrol path");
             }
         }
@@ -230,15 +229,15 @@ public class AgentController : MonoBehaviour
 
     void ChasePlayer()
     {
-        // Direct movement towards player
+        //direct movement towards player
         Vector3 directionToPlayer = (playerCamera.transform.position - transform.position);
         directionToPlayer.y = 0; // Keep movement on ground plane
         directionToPlayer.Normalize();
 
-        // Move towards player
+        //move towards player
         transform.position += directionToPlayer * speed * Time.deltaTime;
 
-        // Update current node for when we lose sight and need to pathfind again
+        //update current node for when we lose sight and need to pathfind again
         currentNode = new Vector2Int(
             Mathf.RoundToInt(transform.position.x / mazeGenerator.scaleFactor),
             Mathf.RoundToInt(transform.position.z / mazeGenerator.scaleFactor)
@@ -271,11 +270,11 @@ public class AgentController : MonoBehaviour
 
     void UpdateMovement()
     {
-        // Don't move or rotate if frozen
+        //don't move or rotate if frozen
         if (currentState == AgentState.Frozen)
             return;
 
-        // Always face the player unless frozen
+        //always face the player unless frozen
         Vector3 directionToPlayer = (playerCamera.transform.position - transform.position);
         directionToPlayer.y = 0; // Keep rotation only on horizontal plane
         if (directionToPlayer != Vector3.zero)
@@ -284,7 +283,7 @@ public class AgentController : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        // Handle movement based on state
+        //handle movement based on state
         switch (currentState)
         {            
             case AgentState.Chasing:
@@ -346,14 +345,14 @@ public class AgentController : MonoBehaviour
         Vector3 moveDirection = (targetPosition - transform.position).normalized;
         transform.position += moveDirection * speed * Time.deltaTime;
 
-        // Update position in grid when reaching target
+        //update position in grid when reaching target
         if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
         {
             currentNode = currentPath[currentPathIndex];
             currentPathIndex++;
         }
 
-        // Always face the player
+        //always face the player
         Vector3 directionToPlayer = (playerCamera.transform.position - transform.position);
         directionToPlayer.y = 0; // Keep rotation only on horizontal plane
         if (directionToPlayer != Vector3.zero)
@@ -368,7 +367,6 @@ public class AgentController : MonoBehaviour
         var openSet = new List<Node>();
         var closedSet = new HashSet<Vector2Int>();
         
-        // Reset node values
         for (int x = 0; x < mazeGenerator.width; x++)
         {
             for (int y = 0; y < mazeGenerator.height; y++)

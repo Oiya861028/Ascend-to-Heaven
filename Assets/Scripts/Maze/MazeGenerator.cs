@@ -90,10 +90,10 @@ public class MazeGenerator : MonoBehaviour
     {
         List<Vector2Int> neighbors = new List<Vector2Int>();
         Vector2Int[] directions = {
-            new Vector2Int(0, 2), // Up
-            new Vector2Int(2, 0), // Right
-            new Vector2Int(0, -2), // Down
-            new Vector2Int(-2, 0) // Left
+            new Vector2Int(0, 2), 
+            new Vector2Int(2, 0), 
+            new Vector2Int(0, -2), 
+            new Vector2Int(-2, 0) 
         };
 
         foreach (Vector2Int dir in directions)
@@ -158,7 +158,7 @@ public class MazeGenerator : MonoBehaviour
         {
             int wallCount = 0;
 
-            // Assuming you have a method to check if a neighboring cell is a wall
+            
             if (IsWall(cellState.x - 1, cellState.y)) wallCount++; // Check left
             if (IsWall(cellState.x + 1, cellState.y)) wallCount++; // Check right
             if (IsWall(cellState.x, cellState.y - 1)) wallCount++; // Check below
@@ -166,7 +166,7 @@ public class MazeGenerator : MonoBehaviour
 
             if (wallCount == 3)
             {
-                // This is a corner cell
+                //this is a corner cell
             }
         }
         grid[x, y].CellState = cellState;

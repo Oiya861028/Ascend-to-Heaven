@@ -3,7 +3,7 @@ using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-public class Key : MonoBehaviour
+public class KeyItem : MonoBehaviour
 {
     protected Transform playerTransform;
     public Text keyCountText;

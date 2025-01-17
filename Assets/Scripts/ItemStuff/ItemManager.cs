@@ -1,9 +1,16 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 public class ItemManager : MonoBehaviour
 {
+    // Current held item
     private Item currentItem;
+    
+    // UI image to show current item
     public Image itemUIImage;
+    public Image keyUIImage;
+    
+    // Distance to pick up items
     public float pickupDistance = 2f;
     private Transform playerTransform;
     
@@ -47,37 +54,44 @@ public class ItemManager : MonoBehaviour
                 if (nearest != null)
                 {
                     currentItem = nearest;
-                    SpriteRenderer spriteRenderer = nearest.GetComponent<SpriteRenderer>();
-                    if (spriteRenderer != null && spriteRenderer.sprite != null)
+                    nearest.gameObject.SetActive(false);
+                    //Check if item is key, if yes then use immediately and update UI
+                    if(currentItem is KeyItem)
                     {
-                        itemUIImage.sprite = spriteRenderer.sprite;
+                        //If it's the first key, we want to draw the icon
+                        if(keyUIImage.sprite == null)
+                        {
+                            keyUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
+                            keyUIImage.enabled = true;
+                        }
+                        currentItem.Use();
+                        currentItem = null;
+                    }
+                    else
+                    {
+                        itemUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
                         itemUIImage.enabled = true;
                     }
-                    nearest.gameObject.SetActive(false);
+                    
                 }
             }
         }
         
-        // Drop item - only if not used
-        if (Input.GetKeyDown(KeyCode.Q) && currentItem != null && !currentItem.HasBeenUsed())
+        // Drop item
+        if (Input.GetKeyDown(KeyCode.Q) && currentItem != null)
         {
             currentItem.gameObject.SetActive(true);
-            currentItem.transform.position = playerTransform.position;
+            currentItem.transform.position = transform.position;
             currentItem = null;
             itemUIImage.enabled = false;
         }
         
-        // Use item - only if not used
-        if (Input.GetKeyDown(KeyCode.F) && currentItem != null && !currentItem.HasBeenUsed())
+        // Use item
+        if (Input.GetKeyDown(KeyCode.F) && currentItem != null)
         {
             currentItem.Use();
+            currentItem = null;
             itemUIImage.enabled = false;
-            
-            // Only clear current item if it's not an ender pearl
-            if (currentItem != null && currentItem.GetType() != typeof(EnderPearl))
-            {
-                currentItem = null;
-            }
         }
     }
 }

@@ -206,7 +206,6 @@ GameObject:
   - component: {fileID: -757754565974871007}
   - component: {fileID: 1356052910418272732}
   - component: {fileID: -8421511993495251116}
-  - component: {fileID: -55691320549837072}
   m_Layer: 0
   m_Name: Item_Map
   m_TagString: Item
@@ -322,18 +321,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-55691320549837072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8117820405749213808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8abaf6c7af885466bb9e1d86ce75cc66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  displayDuration: 10
-  mapPosition: {x: 0.8, y: 0.8}
-  mapSize: {x: 200, y: 200}

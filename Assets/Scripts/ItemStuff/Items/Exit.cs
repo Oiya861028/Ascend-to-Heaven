@@ -13,10 +13,15 @@ public class Exit: MonoBehaviour{
             Debug.Log("All keys collected! You can now exit the maze!");
             canExit = true;
         }
-        //check if player is close enough to exit and has press e
-        if(Vector3.Distance(playerTransform.position, transform.position) < interactDistance && Input.GetKeyDown(KeyCode.E) && canExit){
-            Debug.Log("Player has exited the maze!");
-            SceneManager.LoadScene("WinningScene");
+        // Check if player is close enough to exit and has pressed 'E'
+        if (Input.GetKeyDown(KeyCode.E)){
+            Debug.Log("Player has pressed 'E'");
+            if(canExit && Vector3.Distance(playerTransform.position, transform.position) < interactDistance){
+                Debug.Log("Player has exited the maze!");
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                SceneManager.LoadScene("WinningScene");
+            }
         }
     }
 

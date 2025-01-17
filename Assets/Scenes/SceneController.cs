@@ -7,6 +7,8 @@ public class SceneController : MonoBehaviour
     // This function is called when the "Start Game" button is clicked on the StartScene
     public void LoadInstructionScene()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         SceneManager.LoadScene("InstructionScene");
     }
 

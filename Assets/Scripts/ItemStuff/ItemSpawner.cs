@@ -73,7 +73,7 @@ public class ItemSpawner : MonoBehaviour
         PlaceItem(dynamite);
         PlaceItem(map);
         PlaceItem(pearl);
-        PlaceItem(Exit);
+        PlaceExit(Exit);
     }
 
     private void PlaceItem(GameObject item)
@@ -84,7 +84,14 @@ public class ItemSpawner : MonoBehaviour
         Vector3 position = new Vector3(randomPosition.x, spawnHeight, randomPosition.y); // Adjust position as needed
         Instantiate(item, position, Quaternion.identity);
     }
+    private void PlaceExit(GameObject item)
+    {
+        Vector2 randomPosition = GetUniqueRandomCellPosition(false);
+        usedPositions.Add(randomPosition);
 
+        Vector3 position = new Vector3(randomPosition.x, 0, randomPosition.y); // Adjust position as needed
+        Instantiate(item, position, Quaternion.identity);
+    }
 
     private void PlaceKeys()
     {

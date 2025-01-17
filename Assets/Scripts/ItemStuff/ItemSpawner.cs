@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ItemSpawner : MonoBehaviour
 {
-    public Text keyCountText;
+    public TextMeshProUGUI KeyText;
     [Header("Item prefabs")]
     public GameObject keyPrefab; // Assign your key GameObject in the inspector
     public GameObject chestPrefab;
@@ -106,7 +106,7 @@ public class ItemSpawner : MonoBehaviour
             Vector3 position = new Vector3(RandomCellPosition.x, spawnHeight, RandomCellPosition.y); // Adjust position as needed
             keys[i] = Instantiate(keyPrefab, position, Quaternion.identity);
             keys[i].tag = "Key";
-            keys[i].GetComponent<KeyItem>().keyCountText = keyCountText;
+            keys[i].GetComponent<Key>().KeyText = KeyText;
         }
     }
     

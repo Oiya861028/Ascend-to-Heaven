@@ -17,7 +17,7 @@ public class SceneController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        KeyItem.keysCollected = 0;
+        Key.keysCollected = 0;
         SceneManager.LoadSceneAsync("GameScene");
         print("The button is working");
     }

@@ -9,7 +9,7 @@ public class Exit: MonoBehaviour{
     }
 
     void Update(){
-        if(KeyItem.keysCollected == 3){
+        if(Key.keysCollected == 3){
             Debug.Log("All keys collected! You can now exit the maze!");
             canExit = true;
         }

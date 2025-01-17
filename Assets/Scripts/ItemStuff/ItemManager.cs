@@ -7,8 +7,7 @@ public class ItemManager : MonoBehaviour
     private Item currentItem;
     
     // UI image to show current item
-    public Image itemUIImage;
-    public Image keyUIImage;
+    public Image ItemImage;
     
     // Distance to pick up items
     public float pickupDistance = 2f;
@@ -18,7 +17,7 @@ public class ItemManager : MonoBehaviour
     {
         playerTransform = transform;
         
-        if (itemUIImage == null)
+        if (ItemImage == null)
         {
             Debug.LogError("Item UI Image not assigned in Inspector!");
         }
@@ -54,23 +53,8 @@ public class ItemManager : MonoBehaviour
                     currentItem = nearest;
                     nearest.gameObject.SetActive(false);
                     //Check if item is key, if yes then use immediately and update UI
-                    if(currentItem.tag == "Key")
-                    {
-                        Debug.Log("KeyItem");
-                        //If it's the first key, we want to draw the icon
-                        if(keyUIImage.sprite == null)
-                        {
-                            keyUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
-                            keyUIImage.enabled = true;
-                        }
-                        currentItem.Use();
-                        currentItem = null;
-                    }
-                    else
-                    {
-                        itemUIImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
-                        itemUIImage.enabled = true;
-                    }
+                    ItemImage.sprite = nearest.GetComponent<SpriteRenderer>().sprite;
+                    ItemImage.enabled = true;
                     
                 }
             }
@@ -82,7 +66,7 @@ public class ItemManager : MonoBehaviour
             currentItem.gameObject.SetActive(true);
             currentItem.transform.position = transform.position;
             currentItem = null;
-            itemUIImage.enabled = false;
+            ItemImage.enabled = false;
         }
         
         // Use item
@@ -90,7 +74,7 @@ public class ItemManager : MonoBehaviour
         {
             currentItem.Use();
             currentItem = null;
-            itemUIImage.enabled = false;
+            ItemImage.enabled = false;
         }
     }
 }

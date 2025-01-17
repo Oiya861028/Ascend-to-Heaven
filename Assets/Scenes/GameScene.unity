@@ -119,17 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &86508006 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7172226006418136502, guid: c14099424525bdf4bbbab12164a2efd1, type: 3}
-  m_PrefabInstance: {fileID: 1308440790}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &94821893
 GameObject:
   m_ObjectHideFlags: 0
@@ -515,7 +504,7 @@ PrefabInstance:
     - target: {fileID: 1701979113775467104, guid: e8c50b3a5723d5e43a753cad6cbd1fa7, type: 3}
       propertyPath: keyCountText
       value: 
-      objectReference: {fileID: 86508006}
+      objectReference: {fileID: 0}
     - target: {fileID: 2235130230376997676, guid: e8c50b3a5723d5e43a753cad6cbd1fa7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -671,6 +660,10 @@ PrefabInstance:
       propertyPath: 'agents.Array.data[2]'
       value: 
       objectReference: {fileID: 1442807154}
+    - target: {fileID: 916702585490541749, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: ItemImage
+      value: 
+      objectReference: {fileID: 1668003628}
     - target: {fileID: 916702585490541749, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
       propertyPath: keyUIImage
       value: 
@@ -882,6 +875,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3223540076510224273, guid: c14099424525bdf4bbbab12164a2efd1, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3223540076510224273, guid: c14099424525bdf4bbbab12164a2efd1, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805367946656080581, guid: c14099424525bdf4bbbab12164a2efd1, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9076270936994432307, guid: c14099424525bdf4bbbab12164a2efd1, type: 3}
       propertyPath: m_Name
       value: Canvas

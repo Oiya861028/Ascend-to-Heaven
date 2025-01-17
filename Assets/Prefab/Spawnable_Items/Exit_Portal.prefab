@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 472668726059409213}
+  - component: {fileID: 3527198045675947942}
   m_Layer: 0
   m_Name: Exit_Portal
   m_TagString: Untagged
@@ -32,6 +33,19 @@ Transform:
   - {fileID: 7900365971160845402}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3527198045675947942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2701401472644263333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b28b255929da3749b23d8eb5560822c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactDistance: 2
 --- !u!1 &7052879656637477372
 GameObject:
   m_ObjectHideFlags: 0

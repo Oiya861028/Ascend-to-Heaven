@@ -537,6 +537,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       insertIndex: -1
       addedObject: {fileID: 916702585490541749}
+    - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 826556420422934936}
   m_SourcePrefab: {fileID: 100100000, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
 --- !u!1 &534867529456359794 stripped
 GameObject:
@@ -558,6 +561,25 @@ MonoBehaviour:
   itemUIImage: {fileID: 0}
   keyUIImage: {fileID: 0}
   pickupDistance: 5
+--- !u!114 &826556420422934936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534867529456359794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c12ed984cc481c041b7707a2b8c4ebfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BreathingAudioSource: {fileID: 4534891858232357191}
+  footStepAudioSource: {fileID: 4067181932124591539}
+  audioFadeSpeed: 5
+  agents:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &875927603600638920 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}

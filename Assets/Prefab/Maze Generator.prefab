@@ -52,7 +52,7 @@ MonoBehaviour:
   width: 21
   height: 21
   scaleFactor: 2
-  wallPrefab: {fileID: 8888894509561201240, guid: 7ff10a41a5dbd7f4dbffa69e9e12f102, type: 3}
+  wallPrefab: {fileID: 175681967204312431, guid: 7ff10a41a5dbd7f4dbffa69e9e12f102, type: 3}
   floorPrefab: {fileID: 1415802485292939538, guid: daeadaa2f0eaad5459f4d074e6c9939a, type: 3}
   pathMarkerPrefab: {fileID: 8499024242089193898, guid: 6d127a221535a9c4ba013f96b69d948d, type: 3}
   startPosition: {x: 1, y: 1}
@@ -69,9 +69,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 944292d86770c2548b09b06aaad08a0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keyCountText: {fileID: 0}
   keyPrefab: {fileID: 1882360880522581050, guid: 211ccfd13f01e8246a845442a92dc03c, type: 3}
+  chestPrefab: {fileID: 4636429433372013747, guid: 4c18ac9e74741d84191ebf61330f8050, type: 3}
   portal: {fileID: 2342920449745245326, guid: 596f1f42b28b5cd478607fe3c01fc79a, type: 3}
   spoon: {fileID: 4845482352802513461, guid: a7837cfdd29acf047a873320040d9fd3, type: 3}
   dynamite: {fileID: 9176427228303195048, guid: f1c82da72ed6cb44d9aa7ac3f2e22aa6, type: 3}
-  KeyRespawnTime: 5
+  map: {fileID: 8117820405749213808, guid: d2da0b159b4d8b94e8198929c56087f1, type: 3}
+  pearl: {fileID: 9173711368208568939, guid: 62ed8834923394948b84703b2f4815c3, type: 3}
+  KeyRespawnTime: 60
   spawnDistance: 5
+  spawnHeight: 1

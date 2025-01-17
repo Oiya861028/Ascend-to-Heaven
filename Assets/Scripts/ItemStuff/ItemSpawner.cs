@@ -15,6 +15,7 @@ public class ItemSpawner : MonoBehaviour
     public GameObject dynamite;
     public GameObject map;
     public GameObject pearl;
+    public GameObject Exit;
     
 
     [Header("Respawn Settings")]
@@ -72,6 +73,7 @@ public class ItemSpawner : MonoBehaviour
         PlaceItem(dynamite);
         PlaceItem(map);
         PlaceItem(pearl);
+        PlaceItem(Exit);
     }
 
     private void PlaceItem(GameObject item)

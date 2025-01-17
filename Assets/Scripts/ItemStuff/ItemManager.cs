@@ -26,12 +26,12 @@ public class ItemManager : MonoBehaviour
     
     void Update()
     {
-        if (itemUIImage == null) return;  // Safety check
         
         // Pick up item
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (currentItem == null || currentItem.HasBeenUsed())  // Changed condition
+            Debug.Log("E pressed");
+            if (currentItem == null)  // Changed condition
             {
                 // Find nearest item
                 Item[] items = FindObjectsOfType<Item>();
@@ -40,7 +40,6 @@ public class ItemManager : MonoBehaviour
                 
                 foreach (Item item in items)
                 {
-                    if (item == null) continue;  // Safety check
                     
                     float dist = Vector3.Distance(playerTransform.position, item.transform.position);
                     if (dist < pickupDistance && dist < nearestDist)
@@ -56,8 +55,9 @@ public class ItemManager : MonoBehaviour
                     currentItem = nearest;
                     nearest.gameObject.SetActive(false);
                     //Check if item is key, if yes then use immediately and update UI
-                    if(currentItem is KeyItem)
+                    if(currentItem.tag == "Key")
                     {
+                        Debug.Log("KeyItem");
                         //If it's the first key, we want to draw the icon
                         if(keyUIImage.sprite == null)
                         {

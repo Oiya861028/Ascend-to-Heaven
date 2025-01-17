@@ -6,7 +6,7 @@ public class Portal : Item
     private bool initialized = false;
     private Transform playerRootTransform;
     
-    void Start()
+    protected override void Start()
     {
         Debug.Log("Portal Start called");
         InitializePortal();

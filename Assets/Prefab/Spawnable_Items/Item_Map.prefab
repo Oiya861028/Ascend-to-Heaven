@@ -244,7 +244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayDuration: 10
   mapPosition: {x: 0.8, y: 0.8}
-  mapSize: {x: 200, y: 200}
+  mapSize: {x: 150, y: 150}
 --- !u!135 &1356052910418272732
 SphereCollider:
   m_ObjectHideFlags: 0

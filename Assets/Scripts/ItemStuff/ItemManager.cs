@@ -30,7 +30,6 @@ public class ItemManager : MonoBehaviour
         // Pick up item
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("E pressed");
             if (currentItem == null)  // Changed condition
             {
                 // Find nearest item

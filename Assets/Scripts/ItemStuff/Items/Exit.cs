@@ -15,7 +15,6 @@ public class Exit: MonoBehaviour{
         }
         // Check if player is close enough to exit and has pressed 'E'
         if (Input.GetKeyDown(KeyCode.E)){
-            Debug.Log("Player has pressed 'E'");
             if(canExit && Vector3.Distance(playerTransform.position, transform.position) < interactDistance){
                 Debug.Log("Player has exited the maze!");
                 Cursor.lockState = CursorLockMode.None;

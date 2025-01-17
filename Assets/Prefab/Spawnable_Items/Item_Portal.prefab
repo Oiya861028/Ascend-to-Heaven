@@ -48,7 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ac2d5b2c5b21456ea9a9a8faf973880, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  searchRadius: 20
+  searchRadius: 100
+  minDistance: 10
 --- !u!135 &231589055138734529
 SphereCollider:
   m_ObjectHideFlags: 0

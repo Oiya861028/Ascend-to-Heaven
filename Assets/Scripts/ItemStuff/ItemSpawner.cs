@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ItemSpawner : MonoBehaviour
 {
-    public Text keyCountText;
+    public TextMeshProUGUI KeyText;
     [Header("Item prefabs")]
     public GameObject keyPrefab; // Assign your key GameObject in the inspector
     public GameObject chestPrefab;
@@ -73,7 +73,7 @@ public class ItemSpawner : MonoBehaviour
         PlaceItem(dynamite);
         PlaceItem(map);
         PlaceItem(pearl);
-        PlaceItem(Exit);
+        PlaceExit(Exit);
     }
 
     private void PlaceItem(GameObject item)
@@ -84,7 +84,14 @@ public class ItemSpawner : MonoBehaviour
         Vector3 position = new Vector3(randomPosition.x, spawnHeight, randomPosition.y); // Adjust position as needed
         Instantiate(item, position, Quaternion.identity);
     }
+    private void PlaceExit(GameObject item)
+    {
+        Vector2 randomPosition = GetUniqueRandomCellPosition(false);
+        usedPositions.Add(randomPosition);
 
+        Vector3 position = new Vector3(randomPosition.x, 0, randomPosition.y); // Adjust position as needed
+        Instantiate(item, position, Quaternion.identity);
+    }
 
     private void PlaceKeys()
     {
@@ -99,7 +106,7 @@ public class ItemSpawner : MonoBehaviour
             Vector3 position = new Vector3(RandomCellPosition.x, spawnHeight, RandomCellPosition.y); // Adjust position as needed
             keys[i] = Instantiate(keyPrefab, position, Quaternion.identity);
             keys[i].tag = "Key";
-            keys[i].GetComponent<KeyItem>().keyCountText = keyCountText;
+            keys[i].GetComponent<Key>().KeyText = KeyText;
         }
     }
     

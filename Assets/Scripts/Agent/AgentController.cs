@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class AgentController : MonoBehaviour
 {
@@ -143,7 +144,19 @@ public class AgentController : MonoBehaviour
 
         UpdateStateCheck();
         UpdateMovement();
+        checkIfCaughtPlayer();
     }
+    //Check if Agent has caught the player
+    private void checkIfCaughtPlayer()
+    {
+        if (Vector3.Distance(transform.position, playerCamera.transform.position) < 1.5f)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("LosingScene");
+        }
+    }
+    
 
     void UpdateStateCheck()
     {

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1233149941 &-3645445752071343053
+AudioContainerElement:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 05 - Darksyne (1), Haunted Hills (2) - Mark Miller_{-3645445752071343053}
+  m_AudioClip: {fileID: 8300000, guid: 5d98857428081484aa2f1cd33e8031d6, type: 3}
+  m_Volume: 0
+  m_Enabled: 1
+--- !u!1233149941 &-1656354476956434470
+AudioContainerElement:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 14 - 15 Puzzle (2), Spidey (1) - Mark Miller_{-1656354476956434470}
+  m_AudioClip: {fileID: 8300000, guid: 5cca63e3171ded2478b6ab9f034296ca, type: 3}
+  m_Volume: 0
+  m_Enabled: 1
+--- !u!1307931743 &6418180475301049370
+AudioRandomContainer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GameSceneMusic
+  m_Volume: 0
+  m_Pitch: -160
+  m_AutomaticTriggerTime: 0.01
+  m_LoopCount: 1
+  m_VolumeRandomizationRange: {x: 0, y: 0}
+  m_PitchRandomizationRange: {x: 0, y: 0}
+  m_AutomaticTriggerTimeRandomizationRange: {x: 0, y: 0}
+  m_LoopCountRandomizationRange: {x: 0, y: 0}
+  m_Elements:
+  - {fileID: 6734309294317247310}
+  - {fileID: -1656354476956434470}
+  - {fileID: 7053025356715253948}
+  - {fileID: -3645445752071343053}
+  m_AvoidRepeatingLast: 2
+  m_PlaybackMode: 1
+  m_TriggerMode: 1
+  m_AutomaticTriggerMode: 1
+  m_LoopMode: 0
+  m_VolumeRandomizationEnabled: 0
+  m_PitchRandomizationEnabled: 0
+  m_AutomaticTriggerTimeRandomizationEnabled: 0
+  m_LoopCountRandomizationEnabled: 0
+--- !u!1233149941 &6734309294317247310
+AudioContainerElement:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 15 - Sketch - Mark Miller_{6734309294317247310}
+  m_AudioClip: {fileID: 8300000, guid: 43fd2656412fcc648a66e425f9a66f6d, type: 3}
+  m_Volume: 0
+  m_Enabled: 1
+--- !u!1233149941 &7053025356715253948
+AudioContainerElement:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 06 - Darksyne (2), Haunted Hills (1) - Mark Miller_{7053025356715253948}
+  m_AudioClip: {fileID: 8300000, guid: 1f52da3a62e0c494cbf12cc2b448dcfa, type: 3}
+  m_Volume: 0
+  m_Enabled: 1

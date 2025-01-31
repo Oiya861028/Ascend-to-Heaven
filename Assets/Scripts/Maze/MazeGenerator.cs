@@ -22,6 +22,7 @@ public class MazeGenerator : MonoBehaviour
     public GameObject pathMarkerPrefab;
     public Vector2Int startPosition = new Vector2Int(1, 1);
     public Vector2Int endPosition = new Vector2Int(19, 19);
+    public float spawnHeight = 2f;
 
     public Cell[,] grid;
     public Node[,] nodes;
@@ -212,13 +213,13 @@ public class MazeGenerator : MonoBehaviour
         GameObject player = GameObject.Find("Player");
         if (player != null)
         {
-            player.transform.position = new Vector3(startPosition.x*scaleFactor, 1, startPosition.y*scaleFactor);
+            player.transform.position = new Vector3(startPosition.x*scaleFactor, spawnHeight, startPosition.y*scaleFactor);
         }
 
         GameObject npc = GameObject.Find("NPC");
         if (npc != null)
         {
-            npc.transform.position = new Vector3(endPosition.x*scaleFactor, 1, endPosition.y*scaleFactor);
+            npc.transform.position = new Vector3(endPosition.x*scaleFactor, spawnHeight, endPosition.y*scaleFactor);
         }
     }
 

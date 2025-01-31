@@ -226,7 +226,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 0.11897403, g: 0.02418652, b: 0.16226411, a: 1}
+  m_Color: {r: 0.44238266, g: 0.09849052, b: 0.5999999, a: 1}
   m_Intensity: 200
   m_Range: 10
   m_SpotAngle: 30
@@ -502,6 +502,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2701401472644263333, guid: cbfa3315c5dbd164f9f056c717f81da3, type: 3}
     - target: {fileID: 1701979113775467104, guid: e8c50b3a5723d5e43a753cad6cbd1fa7, type: 3}
+      propertyPath: spawnHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701979113775467104, guid: e8c50b3a5723d5e43a753cad6cbd1fa7, type: 3}
       propertyPath: keyCountText
       value: 
       objectReference: {fileID: 0}
@@ -649,6 +653,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 826556420422934936, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: wallPrefab
+      value: 
+      objectReference: {fileID: 175681967204312431, guid: 7ff10a41a5dbd7f4dbffa69e9e12f102, type: 3}
+    - target: {fileID: 826556420422934936, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: floorPrefab
+      value: 
+      objectReference: {fileID: 1415802485292939538, guid: daeadaa2f0eaad5459f4d074e6c9939a, type: 3}
+    - target: {fileID: 826556420422934936, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
       propertyPath: 'agents.Array.data[0]'
       value: 
       objectReference: {fileID: 548344084}
@@ -672,6 +684,26 @@ PrefabInstance:
       propertyPath: itemUIImage
       value: 
       objectReference: {fileID: 1668003628}
+    - target: {fileID: 4023082943457243782, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.6969317
+      objectReference: {fileID: 0}
+    - target: {fileID: 4023082943457243782, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.39747235
+      objectReference: {fileID: 0}
+    - target: {fileID: 4023082943457243782, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.7660377
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140620007330981362, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: footStepAudioSource
+      value: 
+      objectReference: {fileID: 1411172887}
+    - target: {fileID: 4140620007330981362, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+      propertyPath: BreathingAudioSource
+      value: 
+      objectReference: {fileID: 880523560}
     - target: {fileID: 7117318152291772462, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -770,6 +802,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &880523560 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 4534891858232357191, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+  m_PrefabInstance: {fileID: 802473375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1073941236
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,6 +1013,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c14099424525bdf4bbbab12164a2efd1, type: 3}
+--- !u!82 &1411172887 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 4067181932124591539, guid: adb13c58193b48248be2fb2bdb863bf9, type: 3}
+  m_PrefabInstance: {fileID: 802473375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1442807152
 GameObject:
   m_ObjectHideFlags: 0

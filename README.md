@@ -1,1 +1,2 @@
 # Ascend-to-Heavan
+Welcome to the world of hell. In this game, you have to escape this maze filled with mystery floating items by collecting three keys and finding the exit. But watch out, if you make sound, either through running or picking up an item, you will alert something very omnivous coming your way. 
